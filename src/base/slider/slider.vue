@@ -72,7 +72,7 @@ export default {
     _initSlider() {
         this.slider = new Bsrcoll(this.$refs.slider, {
             scrollX: true,
-            scrollY: false,
+            scrollY: true,
             momentum: false,
             snap: true,
             snapLoop: this.loop,
@@ -104,6 +104,9 @@ export default {
             this.slider.goToPage(indexPage, 0, 400)
         }, this.interval)
     }
+  },
+  destroyed() {
+      clearTimeout(this.timer)
   }
 }
 </script>
