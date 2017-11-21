@@ -15,8 +15,10 @@ export default function jsonp(url, data, options) {
 
 export function pram(data) {
     let url = ''
+    console.log(data, 11111)
     for (let k in data) {
-        let value = (data[k] !== undefined) ? '' : data[k]
+        let value = (data[k] !== undefined) ? data[k] : ''
+        console.log((data[k] !== undefined), 9999)
         url += `&${k}=${encodeURIComponent(value)}`
     }
     return url ? url.substring(1) : ''

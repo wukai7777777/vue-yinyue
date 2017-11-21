@@ -53,9 +53,7 @@
     },
     created() {
       this._getRecommend()
-      setTimeout(()=>{
-        this._getDissList()
-      },5000)
+      this._getDissList()
     },
     methods: {
       _getRecommend() {

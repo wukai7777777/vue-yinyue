@@ -46,7 +46,6 @@
                 this.scroll && this.scroll.disable()
             },
             refresh() {
-                console.log(111111)
                 this.scroll && this.scroll.refresh()
             }
         },
