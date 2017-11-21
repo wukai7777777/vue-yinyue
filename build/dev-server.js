@@ -40,6 +40,20 @@ apiRouter.get('/getDissList', function(req, res) {
     })
 })
 
+apiRouter.get('/taobaoke', function(req, res){
+    var url = 'https://jz-c.doumi.com/api/v3/client/tbk/lists'
+    axios.get(url, {
+        headers: {
+            accessToken: "LmRlaxBbMj/BaaMW6kNiQM0SBrhZ/lJPAUwjhppDYhWNkradyU4XOvEZk2aaczK0zFfT7Zi6"
+        },
+        params: req.query
+    }).then((response) => {
+        res.json(response.data)
+    }).catch((e) => {
+        console.log(e)
+    })
+})
+
 app.use('/api', apiRouter)
 
 var compiler = webpack(webpackConfig)

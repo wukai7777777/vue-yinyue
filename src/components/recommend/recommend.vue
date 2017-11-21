@@ -33,8 +33,8 @@
   </div>
 </template>
 
-<script type="text/ecmsscript-6">
-  import {getRecommend, getDissList} from 'api/recommend'
+<script>
+  import {getRecommend, getDissList, taobaoke} from 'api/recommend'
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
@@ -54,6 +54,10 @@
     created() {
       this._getRecommend()
       this._getDissList()
+
+      taobaoke().then((res) => {
+        console.log(res, 222222)
+      })
     },
     methods: {
       _getRecommend() {

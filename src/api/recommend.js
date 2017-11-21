@@ -32,3 +32,17 @@ export function getDissList() {
         return Promise.resolve(res.data)
     })
 }
+
+export function taobaoke() {
+    const url = '/api/taobaoke'
+    const data = {
+        page: 1,
+        pageSize: 20,
+        channel: 'meizhuanggehu',
+    }
+    return axios.get(url, {
+        params: data
+    }).then((res) => {
+        return Promise.resolve(res.data)
+    })
+}
