@@ -10,8 +10,6 @@ export function getSinger() {
         key: 'all_all_all',
         pagesize: 100,
         pagenum: 1,
-        g_tk: 5381,
-        jsonpCallback: 'GetSingerListCallback',
         hostUin: 0,
         format: 'jsonp',
         notice: 0,

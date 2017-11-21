@@ -52,8 +52,9 @@
         watch: {
             data() {
                 setTimeout(() => {
+                    console.log(222222)
                     this.refresh()
-                }, 20)
+                }, 50)
             }
         }
     }
