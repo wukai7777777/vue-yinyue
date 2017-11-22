@@ -19,7 +19,6 @@
   export default {
     created() {
       getRecommend().then((res) => {
-        console.log(res, 9999)
         if (res.code === 0) {
           console.log(res)
         }

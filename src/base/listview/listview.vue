@@ -2,22 +2,22 @@
    <scroll 
     class="listview"
     :data="data"
-    ref="scroll"
+    ref="listview"
    >
       <ul>
         <li class="list-group" v-for="group in data" ref="listGroup">
           <h2 class="list-group-title">{{group.title}}</h2>
           <uL>
             <li class="list-group-item" v-for="item in group.items">
-              <img class="avatar" @load="loadImage" v-lazy="item.avatar">
+              <img class="avatar" v-lazy="item.avatar">
               <span class="name">{{item.name}}</span>
             </li>
           </uL>
         </li>
       </ul>
-      <div class="list-shortcut">
+      <div class="list-shortcut" @touchstart="onShrotcutTouchStart">
         <ul>
-          <li class="item" v-for="(item, index) in shortcutList">
+          <li class="item" v-for="(item, index) in shortcutList" :data-index="index">
             {{item}}
           </li>
         </ul>
@@ -27,7 +27,7 @@
 
 <script>
 import Scroll from 'base/scroll/scroll'
-
+import {getData} from 'common/js/dom'
 
 export default {
   props: {
@@ -47,12 +47,9 @@ export default {
     Scroll
   },
   methods: {
-    loadImage() {
-      if(!this.checkLoad) {
-        console.log(1211)
-        this.checkLoad = true
-        this.$refs.scroll.refresh()
-      }
+    onShrotcutTouchStart(e) {
+      let curIndex = getData(e.target, 'index')
+      this.$refs.listview.scrollToElement(this.$refs.listGroup[curIndex], 0)
     }
   }
 }

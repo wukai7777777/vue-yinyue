@@ -27,7 +27,6 @@ export default {
       getSinger().then((res) => {
         if(res.code === 0){
           this.singers = this._normalSinger(res.data.list)
-          console.log(this.singers, 99999)
         }
       })
     },
