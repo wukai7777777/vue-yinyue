@@ -56,7 +56,7 @@
       this._getDissList()
 
       taobaoke().then((res) => {
-        console.log(res, 222222)
+        //console.log(res, 222222)
       })
     },
     methods: {

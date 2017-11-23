@@ -3,6 +3,9 @@
     class="listview"
     :data="data"
     ref="listview"
+    :is-scroll="true"
+    :probe-type="3"
+    @scroll="scroll"
    >
       <ul>
         <li class="list-group" v-for="group in data" ref="listGroup">
@@ -15,9 +18,9 @@
           </uL>
         </li>
       </ul>
-      <div class="list-shortcut" @touchstart="onShrotcutTouchStart">
+      <div class="list-shortcut" @touchstart="onShrotcutTouchStart" @touchmove.stop.prevent="onShrotcutTouchmove">
         <ul>
-          <li class="item" v-for="(item, index) in shortcutList" :data-index="index">
+          <li class="item" :class="{current: curIndex == index}" v-for="(item, index) in shortcutList" :data-index="index">
             {{item}}
           </li>
         </ul>
@@ -28,8 +31,17 @@
 <script>
 import Scroll from 'base/scroll/scroll'
 import {getData} from 'common/js/dom'
-
+const ANTCH_HEIGHT = 18 //右边角标的高度 A B C .....
 export default {
+  data() {
+    return {
+      everyHeight: [],
+      curIndex: 0
+    }
+  },
+  created() {
+    this.touch = {}
+  },
   props: {
     data: {
       type: Array,
@@ -49,9 +61,63 @@ export default {
   methods: {
     onShrotcutTouchStart(e) {
       let curIndex = getData(e.target, 'index')
-      this.$refs.listview.scrollToElement(this.$refs.listGroup[curIndex], 0)
+      
+      let fristTouch = e.touches[0]
+      this.touch.y1 = fristTouch.pageY
+      this.touch.curIndex = curIndex
+      this.scrollTo(curIndex)
+    },
+    onShrotcutTouchmove(e) {
+      let fristTouch = e.touches[0]
+      this.touch.y2 = fristTouch.pageY
+      let delat = (this.touch.y2-this.touch.y1)/ANTCH_HEIGHT | 0
+      let curIndex = delat + parseInt(this.touch.curIndex)
+     
+      this.scrollTo(curIndex)
+    },
+    scrollTo(index) {
+      if(!index && index!==0){
+        return
+      }
+      if(index<0){
+        index = 0
+      }else if(index>this.everyHeight.length-1){
+        index = this.everyHeight.length-2
+      }
+      console.log(index)
+       this.curIndex = index
+      this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
+    },
+    scroll(pos) {
+      let scrollY = Math.abs(Math.floor(pos.y))
+      let height = this.everyHeight
+      for(let i=0; i<height.length; i++ ) {
+        if(!height[i+1] || (scrollY >= height[i] && scrollY <= height[i+1])){
+          console.log(i)
+          this.curIndex = i
+          return
+        }
+      }
+    },
+    getGroupHeight() {
+      this.everyHeight = []
+      setTimeout(() => {
+        let lists = this.$refs.listGroup
+        let height = 0
+        this.everyHeight.push(height)
+        for(let i=0; i<lists.length; i++){
+          let item = lists[i]
+          height += item.clientHeight
+          this.everyHeight.push(height)
+        }
+      },20)
     }
-  }
+  },
+  watch: {
+      data() {
+        this.getGroupHeight()
+      }
+    }
 }
 </script>
 

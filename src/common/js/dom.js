@@ -18,7 +18,6 @@ export function getData(el, name, val) {
     if (val) {
         return el.setAttribute(prefix, val)
     } else {
-        console.log(el)
         return el.getAttribute(prefix)
     }
 

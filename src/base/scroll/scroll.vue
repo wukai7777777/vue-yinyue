@@ -14,14 +14,16 @@
                 default: 1
             },
             click: {
-                type: {
-                    type: Boolean,
-                    default: true
-                }
+                type: Boolean,
+                default: true
             },
             data: {
                 type: Array,
                 default: null
+            },
+            isScroll: {
+                type: Boolean,
+                default: false
             }
         },
         mounted() {
@@ -38,6 +40,12 @@
                     probeType: this.probeType,
                     click: this.click
                 })
+                let me = this
+                if(this.isScroll) {
+                    this.scroll.on('scroll', (pos) => {
+                        me.$emit('scroll', pos)
+                    })
+                }
             },
             enable() {
                 this.scroll && this.scroll.enable()
