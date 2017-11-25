@@ -1,13 +1,15 @@
 <template>
   <div class="singers">
-    <list-view :data="singers"></list-view>
+    <list-view @select="selectSinger" :data="singers"></list-view>
+    <router-view></router-view>
   </div>
 </template>
 <script>
-import {getSinger} from 'api/singer'
-//import loading from 'base/loading'
+import {getSinger, getSingerList} from 'api/singer'
 import Singer from 'common/js/singer'
 import ListView from 'base/listview/listview'
+import * as mutation_type from '../../store/mutation-type'
+
 const HOT_NAME = '热门'
 
 export default {
@@ -77,6 +79,12 @@ export default {
      })
 
      return hot.concat(ret)
+    },
+    selectSinger(item) {
+      this.$store.commit(mutation_type.SET_SINGER, item)
+      this.$router.push({
+        path: `/singer/${item.id}`
+      })
     }
   }
 
