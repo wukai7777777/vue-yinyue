@@ -36,6 +36,7 @@
                 if(!this.$refs.wrapper){
                     return
                 }
+                console.log(this.probeType, 333)
                 this.scroll = new Bscroll(this.$refs.wrapper, {
                     probeType: this.probeType,
                     click: this.click
