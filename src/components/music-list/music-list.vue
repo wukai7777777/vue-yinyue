@@ -23,7 +23,7 @@
     ref="list"
     >
         <div class="song-list-wrapper">
-            <song-list :songs="songs"></song-list>
+            <song-list @select="selectItem" :songs="songs"></song-list>
         </div>
         <div class="loading-container" v-show="!songs.length">
             <loading></loading>
@@ -35,6 +35,7 @@
     import Scroll from 'base/scroll/scroll'
     import SongList from 'base/song-list/song-list'
     import Loading from 'base/loading/loading'
+    import {mapActions} from 'vuex'
     export default {
         props: {
             bgImage: {
@@ -61,7 +62,16 @@
             },
             back(){
                 this.$router.back()
-            }
+            },
+            selectItem(item, index) {
+                this.actionsPlay({
+                    list: this.songs,
+                    index
+                })
+            },
+            ...mapActions([
+                'actionsPlay'
+            ])
         },
         watch: {
             newY(newval){
