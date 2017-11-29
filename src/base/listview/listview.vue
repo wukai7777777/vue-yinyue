@@ -106,7 +106,7 @@ export default {
       if(pos.y>0){
         this.isTopShow = false
       }
-      if(pos.y == 0) {
+      if(pos.y >= 0) {
         this.isTopShow = true
       }
       let scrollY = Math.abs(pos.y)

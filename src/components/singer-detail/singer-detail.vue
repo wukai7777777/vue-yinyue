@@ -38,7 +38,6 @@ export default {
             }
             getSingerList(mid).then((res) => {
                 this.songs = this._normalLiszSong(res.data.list)
-                console.log(this._normalLiszSong(res.data.list))
             })
         },
         _normalLiszSong(list) {

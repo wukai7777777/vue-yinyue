@@ -1,26 +1,31 @@
 <template>
   <div class="player" v-show="playList.length>0">
+    <transition 
+        name="normal"
+        @enter="enter"
+        @after-enter="afterEnter"
+        @leave="leave"
+        @after-leave="afterLeave"
+    >
       <div class="normal-player" v-show="fullScreen">
-          <div class="normal-player" v-show="fullScreen">
-              <div class="background">
-                <img width="100%" height="100%" :src="currentSong.image">
-              </div>
-              <div class="top">
-                <div class="back">
-                  <i class="icon-back"></i>
-                </div>
-                <h1 class="title" v-html="currentSong.name"></h1>
-                <h2 class="subtitle" v-html="currentSong.singer"></h2>
-              </div>
-              <div class="middle">
-                <div class="middle-l">
-                  <div class="cd-wrapper">
-                    <div class="cd">
-                      <img :src="currentSong.image" class="image">
-                    </div>
-                  </div>
+          <div class="background">
+            <img width="100%" height="100%" :src="currentSong.image">
+          </div>
+          <div class="top">
+            <div class="back" @click="back">
+              <i class="icon-back"></i>
+            </div>
+            <h1 class="title" v-html="currentSong.name"></h1>
+            <h2 class="subtitle" v-html="currentSong.singer"></h2>
+          </div>
+          <div class="middle">
+            <div class="middle-l">
+              <div class="cd-wrapper" ref="cdWrapper">
+                <div class="cd">
+                  <img :src="currentSong.image" class="image">
                 </div>
               </div>
+            </div>
           </div>
           <div class="bottom">
             <div class="operators">
@@ -42,7 +47,8 @@
             </div>
           </div>
       </div>
-      <div class="mini-player" v-show="!fullScreen">
+    </transition>
+      <div @click="playerShow" class="mini-player" v-show="!fullScreen">
         <div class="icon">
           <img :src="currentSong.image" width="40" height="40" alt="">
         </div>
@@ -59,7 +65,10 @@
   </div>
 </template>
 <script>
-    import {mapGetters} from 'vuex'
+    import {mapGetters, mapMutations} from 'vuex'
+    import * as types from '../../store/mutation-type'
+    import animations from 'create-keyframe-animation'
+
     export default {
       computed: {
         ...mapGetters([
@@ -67,10 +76,74 @@
           'playList',
           'currentSong'
          ])
+      },
+      methods: {
+        back(){
+          //分别用两种方法都可以
+          this.setFullScreen(false)
+          //this.$store.commit(types.SET_FULL_SCREEN, false)
+        },
+        ...mapMutations({
+          setFullScreen: 'SET_FULL_SCREEN'
+        }),
+        playerShow() {
+          this.setFullScreen(true)
+        },
+        enter(el, done) {
+          const {x, y, scale} = this._getPosAadScale()
+
+          let animation = {
+            0: {
+              transform: `translate(${x}px, ${y}px, 0) scale(${scale})`
+            },
+            60: {
+              transform: `translate(0, 0, 0) scale(1.1)`
+            },
+            100: {
+              transform: `translate(0, 0, 0) scale(1)`
+            }
+          }
+
+          animations.registerAnimation({
+            name: 'move',
+            animation,
+            presets: {
+              duration: 400,
+              easing: 'linear'
+            }
+          })
+
+          animations.runAnimation(this.$refs.cdWrapper, 'move', done)
+
+        },
+        afterEnter(el, done) {
+          animations.unregisterAnimation('move')
+          this.$refs.cdWrapper.style.animation = ''
+        },
+        leave(el, done) {
+
+        },
+        afterLeave(el, done) {
+
+        },
+        _getPosAadScale() {
+          const targetWidth = 40
+          const paddingLeft = 40
+          const paddingBottom = 30
+          const paddingTop = 80
+          const width = window.innerWidth * 0.8
+          const scale = targetWidth / width
+          const x = -(window.innerWidth / 2 - paddingLeft)
+          const y = window.innerHeight - paddingTop - width / 2 - paddingBottom
+          return {
+            x,
+            y,
+            scale
+          }
+        }
       }
     }
 </script>
-
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
