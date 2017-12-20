@@ -36,7 +36,7 @@
                 <i class="icon-prev"></i>
               </div>
               <div class="icon i-center">
-                <i class="icon-play"></i>
+                <i class="icon-play" :class="{'icon-pause':playing}" @click="togglePlay"></i>
               </div>
               <div class="icon i-right">
                 <i class="icon-next"></i>
@@ -48,6 +48,7 @@
           </div>
       </div>
     </transition>
+    <transition name="mini">
       <div @click="playerShow" class="mini-player" v-show="!fullScreen">
         <div class="icon">
           <img :src="currentSong.image" width="40" height="40" alt="">
@@ -57,11 +58,18 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
+          <progress-circle :radius="radius" >
+            <i class="icon-mini icon-play-mini"
+             :class="{'icon-pause-mini': playing}"
+             @click.stop="togglePlay"></i>
+          </progress-circle>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
         </div>
       </div>
+    </transition>
+    <audio :src="currentSong.url" ref="audio"></audio>
   </div>
 </template>
 <script>
@@ -69,16 +77,26 @@
     import * as types from '../../store/mutation-type'
     import animations from 'create-keyframe-animation'
     import {prefixStyle} from 'common/js/dom'
-
+    import progressCircle from 'base/progress-circle/progress-circle'
+  console.log(progressCircle, 99999)
     const transform = prefixStyle('transform')
 
     export default {
+      data() {
+        return{
+          radius: 32
+        }
+      },
       computed: {
         ...mapGetters([
           'fullScreen',
           'playList',
-          'currentSong'
+          'currentSong',
+          'playing'
          ])
+      },
+      components: {
+        progressCircle
       },
       methods: {
         back(){
@@ -87,7 +105,8 @@
           //this.$store.commit(types.SET_FULL_SCREEN, false)
         },
         ...mapMutations({
-          setFullScreen: 'SET_FULL_SCREEN'
+          setFullScreen: 'SET_FULL_SCREEN',
+          setPlayState: 'SET_PLAYING_STATE',
         }),
         playerShow() {
           this.setFullScreen(true)
@@ -148,7 +167,23 @@
             scale
           }
         },
-      }
+        togglePlay() {
+          this.setPlayState(!this.playing)
+        }
+      },
+      watch: {
+        currentSong() {
+          this.$nextTick(() => {
+            this.$refs.audio.play()
+          })
+        },
+        playing() {
+          let player = this.$refs.audio;
+          this.$nextTick(() => {
+            this.playing?player.play():player.pause();
+          })
+        }
+      },
     }
 </script>
 
