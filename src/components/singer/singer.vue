@@ -9,6 +9,7 @@ import {getSinger, getSingerList} from 'api/singer'
 import Singer from 'common/js/singer'
 import ListView from 'base/listview/listview'
 import * as mutation_type from '../../store/mutation-type'
+import originJsonp from 'jsonp'
 
 const HOT_NAME = '热门'
 
@@ -23,6 +24,19 @@ export default {
   },
   created() {
     this._getSinger();
+    //获取百度地图api接口 （将经纬度转化为实际人能看懂的地址）
+    let url = 'http://api.map.baidu.com/geocoder/v2/?location=39.934,116.329&output=json&pois=1&ak=nbw2YKOeOsClKLWi1dF3Fy8ZPiMK6Kua&v=2.0'
+    //const opation = {param: 'jsonpCallback'}
+
+    originJsonp(url, (err, data)=>{
+      if(!err) {
+        console.log(data)
+      } else {
+        console.log(err, 9999)
+      }
+    })
+
+
   },
   methods: {
     _getSinger() {
