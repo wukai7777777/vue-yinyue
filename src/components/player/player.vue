@@ -68,6 +68,9 @@
     import {mapGetters, mapMutations} from 'vuex'
     import * as types from '../../store/mutation-type'
     import animations from 'create-keyframe-animation'
+    import {prefixStyle} from 'common/js/dom'
+
+    const transform = prefixStyle('transform')
 
     export default {
       computed: {
@@ -94,13 +97,13 @@
 
           let animation = {
             0: {
-              transform: `translate(${x}px, ${y}px, 0) scale(${scale})`
+              transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`
             },
             60: {
-              transform: `translate(0, 0, 0) scale(1.1)`
+              transform: `translate3d(0, 0, 0) scale(1.1)`
             },
             100: {
-              transform: `translate(0, 0, 0) scale(1)`
+              transform: `translate3d(0, 0, 0) scale(1)`
             }
           }
 
@@ -121,10 +124,14 @@
           this.$refs.cdWrapper.style.animation = ''
         },
         leave(el, done) {
-
+          this.$refs.cdWrapper.style.transition = 'all 0.4s'
+          const {x, y, scale} = this._getPosAadScale();
+          this.$refs.cdWrapper.style[transform] = `translate3d(${x}px, ${y}px, 0) scale(${scale})`
+          this.$refs.cdWrapper.addEventListener('transitionend', done);
         },
         afterLeave(el, done) {
-
+          this.$refs.cdWrapper.style.transition = ''
+          this.$refs.cdWrapper.style[transform] = ''
         },
         _getPosAadScale() {
           const targetWidth = 40
@@ -140,7 +147,7 @@
             y,
             scale
           }
-        }
+        },
       }
     }
 </script>
