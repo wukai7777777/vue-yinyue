@@ -33,13 +33,13 @@
                 <i class="icon-sequence"></i>
               </div>
               <div class="icon i-left">
-                <i class="icon-prev"></i>
+                <i class="icon-prev" @click="prev"></i>
               </div>
               <div class="icon i-center">
-                <i class="icon-play" :class="{'icon-pause':playing}" @click="togglePlay"></i>
+                <i class="needsclick" :class="iconPlaying" @click="togglePlay"></i>
               </div>
               <div class="icon i-right">
-                <i class="icon-next"></i>
+                <i class="icon-next" @next="next"></i>
               </div>
               <div class="icon i-right">
                 <i class="icon icon-not-favorite"></i>
@@ -78,7 +78,6 @@
     import animations from 'create-keyframe-animation'
     import {prefixStyle} from 'common/js/dom'
     import progressCircle from 'base/progress-circle/progress-circle'
-  console.log(progressCircle, 99999)
     const transform = prefixStyle('transform')
 
     export default {
@@ -92,8 +91,12 @@
           'fullScreen',
           'playList',
           'currentSong',
-          'playing'
-         ])
+          'playing',
+          'currentIndex'
+         ]),
+         iconPlaying() {
+           return this.playing ? 'icon-pause' : 'icon-play'
+         }
       },
       components: {
         progressCircle
@@ -169,6 +172,12 @@
         },
         togglePlay() {
           this.setPlayState(!this.playing)
+        },
+        prev() {
+
+        },
+        next() {
+
         }
       },
       watch: {
