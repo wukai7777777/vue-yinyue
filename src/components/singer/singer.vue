@@ -30,9 +30,9 @@ export default {
 
     originJsonp(url, (err, data)=>{
       if(!err) {
-        console.log(data)
+        //console.log(data)
       } else {
-        console.log(err, 9999)
+        //console.log(err, 9999)
       }
     })
 

@@ -28,18 +28,25 @@
             </div>
           </div>
           <div class="bottom">
+            <div class="progress-wrapper">
+              <span class="time time-l">{{format(currentTiem)}}</span>
+              <div class="progress-bar-wrapper">
+                <progress-bar :percent="percent" @progressChange="setProgessBar"></progress-bar>
+              </div>
+              <span class="time time-r">{{format(currentSong.duration)}}</span>
+            </div>
             <div class="operators">
               <div class="icon i-left">
                 <i class="icon-sequence"></i>
               </div>
-              <div class="icon i-left">
+              <div class="icon i-left" :class="disableCla">
                 <i class="icon-prev" @click="prev"></i>
               </div>
-              <div class="icon i-center">
+              <div class="icon i-center"  :class="disableCla">
                 <i class="needsclick" :class="iconPlaying" @click="togglePlay"></i>
               </div>
-              <div class="icon i-right">
-                <i class="icon-next" @next="next"></i>
+              <div class="icon i-right"  :class="disableCla">
+                <i class="icon-next" @click="next"></i>
               </div>
               <div class="icon i-right">
                 <i class="icon icon-not-favorite"></i>
@@ -58,7 +65,7 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
-          <progress-circle :radius="radius" >
+          <progress-circle :radius="radius" :percent="percent">
             <i class="icon-mini icon-play-mini"
              :class="{'icon-pause-mini': playing}"
              @click.stop="togglePlay"></i>
@@ -69,7 +76,7 @@
         </div>
       </div>
     </transition>
-    <audio :src="currentSong.url" ref="audio"></audio>
+    <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime($event)"></audio>
   </div>
 </template>
 <script>
@@ -78,12 +85,15 @@
     import animations from 'create-keyframe-animation'
     import {prefixStyle} from 'common/js/dom'
     import progressCircle from 'base/progress-circle/progress-circle'
+    import progressBar from 'base/progress-bar/progress-bar'
     const transform = prefixStyle('transform')
 
     export default {
       data() {
         return{
-          radius: 32
+          radius: 32,
+          songReady: false,
+          currentTiem: ''
         }
       },
       computed: {
@@ -96,10 +106,17 @@
          ]),
          iconPlaying() {
            return this.playing ? 'icon-pause' : 'icon-play'
+         },
+         disableCla() {
+           return this.songReady ? '' : 'disable'
+         },
+         percent() {
+           return this.currentTiem / this.currentSong.duration;
          }
       },
       components: {
-        progressCircle
+        progressCircle,
+        progressBar
       },
       methods: {
         back(){
@@ -110,6 +127,7 @@
         ...mapMutations({
           setFullScreen: 'SET_FULL_SCREEN',
           setPlayState: 'SET_PLAYING_STATE',
+          setCurIndex: 'SET_CURRENT_INDEX'
         }),
         playerShow() {
           this.setFullScreen(true)
@@ -174,10 +192,65 @@
           this.setPlayState(!this.playing)
         },
         prev() {
-
+          
+          if(!this.songReady) { // audio标签触发 canplay事件才可以点击下一页
+            return;
+          }
+          let index = this.currentIndex - 1;
+          if(index === -1) {
+            index = this.playList.length-1;
+          }
+          if(this.playing === false){
+            this.togglePlay()
+          }
+          this.setCurIndex(index);
+          this.songReady = false;
         },
         next() {
-
+          
+          if(!this.songReady) {
+            return;
+          }
+          let index = this.currentIndex + 1;
+          if(index === this.playList.length) {
+            index = 0;
+          }
+          if(this.playing === false){
+            this.togglePlay()
+          }
+          this.setCurIndex(index);
+          this.songReady = false
+        },
+        ready() {
+          this.songReady = true;
+        },
+        error() {
+          this.songReady = true;
+        },
+        updateTime(e) {
+          this.currentTiem = e.target.currentTime;
+        },
+        setProgessBar(precent) {
+          this.$refs.audio.currentTime = this.currentSong.duration*precent; //改变音乐播放进度
+          if(!this.playing) {
+            this.togglePlay()
+          }
+        },
+        format(interval) {
+          let time = ''
+          interval = interval | 0;
+          let minute = interval/60 | 0;
+          let second = this._pad(interval % 60);
+          time = minute + ':' + second
+          return time;
+        },
+        _pad(s, n=2) {
+          let len = s.toString().length;
+          while(len<n) {
+            s = '0'+s;
+            len++
+          }
+          return s
         }
       },
       watch: {
@@ -189,10 +262,10 @@
         playing() {
           let player = this.$refs.audio;
           this.$nextTick(() => {
-            this.playing?player.play():player.pause();
+            this.playing ? player.play() : player.pause();
           })
         }
-      },
+      }
     }
 </script>
 
@@ -264,6 +337,7 @@
             left: 10%
             top: 0
             width: 80%
+            box-sizing: border-box
             height: 100%
             .cd
               width: 100%

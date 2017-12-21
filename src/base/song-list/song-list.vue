@@ -24,7 +24,6 @@
                 return `${songs.name}.${songs.singer}`
             },
             selectItem(item, index) {
-                console.log(item, index)
                 this.$emit('select', item, index)
             }
         }
