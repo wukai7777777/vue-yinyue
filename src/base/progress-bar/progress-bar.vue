@@ -33,13 +33,18 @@
                     return
                 }
                 let touch = e.changedTouches
-                this.touch.left = this.$refs.progress.clientWidth;
                 this.touch.startX = touch[0].pageX;
+                this.touch.left = this.$refs.progress.clientWidth;
             },
             progressMove(e) {
+                if(!this.touch.initail) {
+                    return
+                }
                 let touch = e.changedTouches;
                 let disX = touch[0].pageX - this.touch.startX
                 let offsetWidth = Math.min(this.$refs.progressBar.clientWidth - btnWidth, Math.max(0, this.touch.left + disX))
+                console.log(this.$refs.progressBar.clientWidth - btnWidth)
+                console.log(offsetWidth)
                 this.moveStart(offsetWidth)
             },
             progressEnd() {
@@ -48,7 +53,7 @@
             },
             moveStart(offsetWidth) {
                 this.$refs.progress.style.width = `${offsetWidth}px`
-                this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px, 0px, 0px)`
+                this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px, 0, 0)`
             },
             triggerProgress() { 
                 let perWidh = this.$refs.progressBar.clientWidth - btnWidth;
@@ -56,7 +61,11 @@
                 this.$emit('progressChange', precent)
             },
             progressClick(e) {//点击进度条设置音乐进度
-                let offsetX = e.offsetX
+            //当我们点击progressBar  获取的e.offsetX 不对
+                //let offsetX = e.offsetX
+                const rect = this.$refs.progressBar.getBoundingClientRect()
+                const offsetX = e.pageX - rect.left;
+                console.log(offsetX, 888888)
                 this.moveStart(offsetX)
                 this.triggerProgress()
             }

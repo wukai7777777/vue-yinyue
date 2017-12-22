@@ -36,8 +36,8 @@
               <span class="time time-r">{{format(currentSong.duration)}}</span>
             </div>
             <div class="operators">
-              <div class="icon i-left">
-                <i class="icon-sequence"></i>
+              <div class="icon i-left" @click="changeMode">
+                <i :class="playMode"></i>
               </div>
               <div class="icon i-left" :class="disableCla">
                 <i class="icon-prev" @click="prev"></i>
@@ -76,7 +76,7 @@
         </div>
       </div>
     </transition>
-    <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime($event)"></audio>
+    <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime($event)" @ended="end"></audio>
   </div>
 </template>
 <script>
@@ -86,6 +86,8 @@
     import {prefixStyle} from 'common/js/dom'
     import progressCircle from 'base/progress-circle/progress-circle'
     import progressBar from 'base/progress-bar/progress-bar'
+    import {playMode} from 'common/js/config'
+    import {shuffle} from 'common/js/util'
     const transform = prefixStyle('transform')
 
     export default {
@@ -102,7 +104,9 @@
           'playList',
           'currentSong',
           'playing',
-          'currentIndex'
+          'currentIndex',
+          'mode',
+          'sequenceList'
          ]),
          iconPlaying() {
            return this.playing ? 'icon-pause' : 'icon-play'
@@ -112,6 +116,9 @@
          },
          percent() {
            return this.currentTiem / this.currentSong.duration;
+         },
+         playMode() {
+           return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random';
          }
       },
       components: {
@@ -127,7 +134,9 @@
         ...mapMutations({
           setFullScreen: 'SET_FULL_SCREEN',
           setPlayState: 'SET_PLAYING_STATE',
-          setCurIndex: 'SET_CURRENT_INDEX'
+          setCurIndex: 'SET_CURRENT_INDEX',
+          setPlayMode: 'SET_MODE',
+          setPlayList: 'SET_PLAY_LIST'
         }),
         playerShow() {
           this.setFullScreen(true)
@@ -191,6 +200,17 @@
         togglePlay() {
           this.setPlayState(!this.playing)
         },
+        end() {
+          if(this.mode === playMode.loop) {
+            this.loop()
+          }else{
+            this.next()
+          }
+        },
+        loop() {
+          this.$refs.audio.currentTiem = 0
+          this.$refs.audio.play()
+        },
         prev() {
           
           if(!this.songReady) { // audio标签触发 canplay事件才可以点击下一页
@@ -231,10 +251,29 @@
           this.currentTiem = e.target.currentTime;
         },
         setProgessBar(precent) {
-          this.$refs.audio.currentTime = this.currentSong.duration*precent; //改变音乐播放进度
-          if(!this.playing) {
+          let currentTime = this.currentSong.duration*precent
+          this.$refs.audio.currentTime = currentTime; //改变音乐播放进度
+          if(!this.playing) {// 在拖动滚动条且当暂定时将播放按钮打开
             this.togglePlay()
           }
+        },
+        changeMode() {
+          let mode = (this.mode+1)%3
+          this.setPlayMode(mode)
+          let list = null;
+          if(mode === playMode.random) {
+            list = shuffle(this.sequenceList)
+          }else{
+            list = this.sequenceList
+          }
+          this.resetCurrentIndex(list)
+          this.setPlayList(list);
+        },
+        resetCurrentIndex(list) {
+          let index = list.findIndex((item) => {
+            return item.id === this.currentSong.id
+          })
+          this.setCurIndex(index)
         },
         format(interval) {
           let time = ''
@@ -254,7 +293,10 @@
         }
       },
       watch: {
-        currentSong() {
+        currentSong(newSong, oldSong) {
+          if(newSong.id === oldSong.id){
+            return
+          }
           this.$nextTick(() => {
             this.$refs.audio.play()
           })
