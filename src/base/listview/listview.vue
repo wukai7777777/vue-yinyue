@@ -39,9 +39,11 @@
 import Scroll from 'base/scroll/scroll'
 import {getData} from 'common/js/dom'
 import Loading from 'base/loading/loading'
+import { playListMixin } from 'common/js/playListMixin.js'
 const ANTCH_HEIGHT = 18 //右边角标的高度 A B C .....
 const TITLE_HEIGHT = 30 
 export default {
+  mixins: [playListMixin],
   data() {
     return {
       everyHeight: [],
@@ -74,6 +76,11 @@ export default {
     Loading
   },
   methods: {
+    handleMixin(playList) { // mixin 单独处理方法
+        let bottom = playList.length>0 ? '60px' : 0
+        this.$refs.listview.$el.style.marginBottom = bottom
+        this.$refs.listview.refresh()
+    },
     onShrotcutTouchStart(e) {
       let curIndex = getData(e.target, 'index')
       

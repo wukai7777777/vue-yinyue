@@ -38,8 +38,10 @@
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
+  import { playListMixin } from 'common/js/playListMixin.js'
 
   export default {
+    mixins: [playListMixin],
     data() {
       return {
         slideData: [],
@@ -60,6 +62,11 @@
       })
     },
     methods: {
+      handleMixin(playList) { // mixin 单独处理方法
+          let bottom = playList.length>0 ? '60px' : 0
+          this.$refs.recommend.style.bottom = bottom
+          this.$refs.scroll.refresh()
+      },
       _getRecommend() {
         getRecommend().then((res) => {
           if (res.code === 0) {

@@ -23,7 +23,7 @@
     ref="list"
     >
         <div class="song-list-wrapper">
-            <song-list @select="selectItem" :songs="songs"></song-list>
+            <song-list ref="songList" @select="selectItem" :songs="songs"></song-list>
         </div>
         <div class="loading-container" v-show="!songs.length">
             <loading></loading>
@@ -35,8 +35,10 @@
     import Scroll from 'base/scroll/scroll'
     import SongList from 'base/song-list/song-list'
     import Loading from 'base/loading/loading'
+    import { playListMixin } from 'common/js/playListMixin.js'
     import {mapActions} from 'vuex'
     export default {
+        mixins: [playListMixin],
         props: {
             bgImage: {
                 type: String,
@@ -60,6 +62,11 @@
             //console.log(this.songs, 'list')
         },
         methods: {
+            handleMixin(playList) { // mixin 处理公共方法
+                let bottom = playList.length>0 ? '60px' : 0
+                this.$refs.list.$el.style.bottom = bottom
+                this.$refs.list.refresh()
+            },
             scroll(pos) {
                 this.newY = pos.y
             },
