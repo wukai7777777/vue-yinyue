@@ -22,10 +22,28 @@
             <div class="middle-l">
               <div class="cd-wrapper" ref="cdWrapper">
                 <div class="cd">
-                  <img :src="currentSong.image" class="image">
+                  <img :class="playingRotate" :src="currentSong.image" class="image">
                 </div>
               </div>
             </div>
+              <scroll 
+              class="middle-r"
+              ref="lyricList"
+              :data="currentLyric && currentLyric.lines"
+              :probe-type="3"
+              >
+                <div class="lyric-wrapper">
+                  <div v-if="currentLyric">
+                    <p ref="lyricLine"
+                    class="text"
+                    :class="{'current': index===currentLineLyric}"
+                    v-for="(line, index) in currentLyric.lines"
+                    > 
+                      {{line.txt}}
+                    </p>
+                  </div>
+                </div>
+              </scroll>
           </div>
           <div class="bottom">
             <div class="progress-wrapper">
@@ -58,7 +76,7 @@
     <transition name="mini">
       <div @click="playerShow" class="mini-player" v-show="!fullScreen">
         <div class="icon">
-          <img :src="currentSong.image" width="40" height="40" alt="">
+          <img :class="playingRotate" :src="currentSong.image" width="40" height="40" alt="">
         </div>
         <div class="text">
           <h2 class="name" v-html="currentSong.name"></h2>
@@ -88,6 +106,9 @@
     import progressBar from 'base/progress-bar/progress-bar'
     import {playMode} from 'common/js/config'
     import {shuffle} from 'common/js/util'
+    import Lyric from 'lyric-parser'
+    import Scroll from 'base/scroll/scroll'
+
     const transform = prefixStyle('transform')
 
     export default {
@@ -95,7 +116,9 @@
         return{
           radius: 32,
           songReady: false,
-          currentTiem: ''
+          currentTiem: '',
+          currentLyric: null,
+          currentLineLyric: 0
         }
       },
       computed: {
@@ -119,11 +142,15 @@
          },
          playMode() {
            return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random';
+         },
+         playingRotate() {
+           return this.playing ? 'play' : ''
          }
       },
       components: {
         progressCircle,
-        progressBar
+        progressBar,
+        Scroll
       },
       methods: {
         back(){
@@ -227,7 +254,7 @@
           this.songReady = false;
         },
         next() {
-          
+
           if(!this.songReady) {
             return;
           }
@@ -269,7 +296,7 @@
           this.resetCurrentIndex(list)
           this.setPlayList(list);
         },
-        resetCurrentIndex(list) {
+        resetCurrentIndex(list) {// 切換播放模式
           let index = list.findIndex((item) => {
             return item.id === this.currentSong.id
           })
@@ -283,6 +310,24 @@
           time = minute + ':' + second
           return time;
         },
+        getLyric() {
+          this.currentSong.getLyric().then((lyric) =>{
+            this.currentLyric = new Lyric(lyric, this.handleLyric)
+            if(this.playing) {
+              this.currentLyric.play();
+            }
+            console.log(this.currentLyric, 88888888)
+          })
+        },
+        handleLyric({lineNum, txt}) {
+          this.currentLineLyric = lineNum
+          if(lineNum > 5) {
+            let lyricLine = this.$refs.lyricLine
+            this.$refs.lyricList.scrollToElement(lyricLine[lineNum-5], 1000)
+          } else {
+            this.$refs.lyricList.scrollTo(0, 0, 1000)
+          }
+        },
         _pad(s, n=2) {
           let len = s.toString().length;
           while(len<n) {
@@ -294,11 +339,14 @@
       },
       watch: {
         currentSong(newSong, oldSong) {
+          console.log(121212)
+          //console.log(this.currentSong)
           if(newSong.id === oldSong.id){
             return
           }
           this.$nextTick(() => {
             this.$refs.audio.play()
+            this.getLyric()
           })
         },
         playing() {
@@ -379,7 +427,6 @@
             left: 10%
             top: 0
             width: 80%
-            box-sizing: border-box
             height: 100%
             .cd
               width: 100%
@@ -387,9 +434,9 @@
               box-sizing: border-box
               border: 10px solid rgba(255, 255, 255, 0.1)
               border-radius: 50%
-              &.play
+              .play
                 animation: rotate 20s linear infinite
-              &.pause
+              .pause
                 animation-play-state: paused
               .image
                 position: absolute

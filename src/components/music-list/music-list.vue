@@ -5,7 +5,7 @@
       </div>
       <h1 class="title">{{title}}</h1>
     <div class="bg-image" :style="bgstyle" ref="bgImage">
-        <div class="play-wrapper">
+        <div class="play-wrapper" @click="randomPlayer">
             <div class="play" ref="playBtn" v-show="songs.length>0">
                 <i class="icon-play"></i>
                 <span class="text">随机播放全部</span>
@@ -56,6 +56,9 @@
                 newY: 0
             }
         },
+        updated() {
+            //console.log(this.songs, 'list')
+        },
         methods: {
             scroll(pos) {
                 this.newY = pos.y
@@ -64,13 +67,33 @@
                 this.$router.back()
             },
             selectItem(item, index) {
-                this.actionsPlay({
+                //為了清除操作對象下的數組留下的副作用
+                //let _arr = this.songs.slice()
+                //console.log(_arr, 'select')
+                // this.actionsPlay({
+                //     list: _arr,
+                //     index
+                // })
+                 this.actionsPlay({
                     list: this.songs,
                     index
                 })
             },
+            randomPlayer() {
+                //為了清除操作對象下的數組留下的副作用
+                //let _arr = this.songs.slice()
+                // console.log(_arr, 'random')
+                // this.randomPlay({
+                //     list: _arr
+                // })
+                //console.log(_arr, 'random')
+                this.randomPlay({
+                    list: this.songs
+                })
+            },
             ...mapActions([
-                'actionsPlay'
+                'actionsPlay',
+                'randomPlay'
             ])
         },
         watch: {

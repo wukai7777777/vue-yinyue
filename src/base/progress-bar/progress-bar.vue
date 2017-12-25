@@ -43,8 +43,6 @@
                 let touch = e.changedTouches;
                 let disX = touch[0].pageX - this.touch.startX
                 let offsetWidth = Math.min(this.$refs.progressBar.clientWidth - btnWidth, Math.max(0, this.touch.left + disX))
-                console.log(this.$refs.progressBar.clientWidth - btnWidth)
-                console.log(offsetWidth)
                 this.moveStart(offsetWidth)
             },
             progressEnd() {
@@ -65,7 +63,6 @@
                 //let offsetX = e.offsetX
                 const rect = this.$refs.progressBar.getBoundingClientRect()
                 const offsetX = e.pageX - rect.left;
-                console.log(offsetX, 888888)
                 this.moveStart(offsetX)
                 this.triggerProgress()
             }
@@ -74,7 +71,7 @@
             percent(newPercent){
                 if(newPercent && !this.touch.initail) {
                     let perWidh = this.$refs.progressBar.clientWidth - btnWidth;
-                    let offsetWidth = perWidh*newPercent
+                    let offsetWidth = Math.min(perWidh, perWidh*newPercent)
                     this.moveStart(offsetWidth)
                 }
             }
