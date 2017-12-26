@@ -41,21 +41,26 @@
             }
 
             getSongList(this.disc.dissid).then((res) => {
-                if (typeof res === 'string') {
-                    var farst = res.indexOf('{');
-                    var last = res.lastIndexOf('}')
+                //if (typeof res === 'string') {
+                    // console.log(res, 111111111)
+                    // console.time('time')
+                    // var farst = res.indexOf('{');
+                    // var last = res.lastIndexOf('}')
+                    // console.timeEnd('time')
 
-                    res = res.substring(farst, last)+'}'
-                    res = JSON.parse(res)
+                    // res = res.substring(farst, last)+'}'
+                    // res = JSON.parse(res)
                     if(res.code === 0) {
+                        console.log(res.cdlist[0].songlist)
                         self.songs = this._normalData(res.cdlist[0].songlist);
                     }
-                }
+                //}
             })
         },
         _normalData(list) {
             let ret = []
             list.forEach((item) => {
+                //let {musicData} = item
                 if(item.songid && item.albumid) {
                     ret.push(createSong(item))
                 }

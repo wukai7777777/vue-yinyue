@@ -72,7 +72,16 @@ apiRouter.get('/getSongList', function(req, res) {
         },
         params: req.query
     }).then((response) => {
-        res.json(response.data)
+        var ret = response.data;
+
+        console.time('time')
+        var farst = ret.indexOf('{');
+        var last = ret.lastIndexOf('}')
+        console.timeEnd('time')
+
+        ret = ret.substring(farst, last)+'}'
+        ret = JSON.parse(ret)
+        res.json(ret)
     }).catch((e) => {
         console.log(e)
     })
