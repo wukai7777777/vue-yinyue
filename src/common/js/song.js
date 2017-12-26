@@ -1,6 +1,6 @@
 import { getLyric } from 'api/song'
 import { Base64 } from 'js-base64'
-console.log(Base64, 11111)
+
 export default class Song {
     constructor({ id, mid, singer, name, album, duration, image, url }) {
         this.id = id

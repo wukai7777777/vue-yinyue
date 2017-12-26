@@ -13,3 +13,5 @@ export const SET_MODE = 'SET_MODE'
 export const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX'
 
 export const SET_CURRENT_SONG = 'SET_CURRENT_SONG'
+
+export const SET_DISC = 'SET_DISC'

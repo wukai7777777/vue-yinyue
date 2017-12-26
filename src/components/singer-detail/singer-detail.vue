@@ -37,7 +37,7 @@ export default {
                 return
             }
             getSingerList(mid).then((res) => {
-                console.log(res.data.list, 9999)
+                console.log(res.data.list, '歌手详情页数据')
                 this.songs = this._normalLiszSong(res.data.list)
             })
         },
