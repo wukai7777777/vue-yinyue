@@ -1,6 +1,6 @@
 <template>
-  <div class="singers">
-    <list-view @select="selectSinger" :data="singers"></list-view>
+  <div class="singers" ref="singers">
+    <list-view @select="selectSinger" :data="singers" ref="list"></list-view>
     <router-view></router-view>
   </div>
 </template>
@@ -10,10 +10,13 @@ import Singer from 'common/js/singer'
 import ListView from 'base/listview/listview'
 import * as mutation_type from '../../store/mutation-type'
 import originJsonp from 'jsonp'
+import { playListMixin } from 'common/js/playListMixin.js'
+ 
 
 const HOT_NAME = '热门'
 
 export default {
+  mixins: [playListMixin],
   data() {
     return {
       singers: []
@@ -39,6 +42,11 @@ export default {
 
   },
   methods: {
+    handleMixin(playList) { // mixin 单独处理方法
+        let bottom = playList.length>0 ? '60px' : 0
+        this.$refs.singers.style.bottom = bottom
+        this.$refs.list.refresh()
+    },
     _getSinger() {
       getSinger().then((res) => {
         if(res.code === 0){
