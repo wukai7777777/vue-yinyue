@@ -26,8 +26,11 @@ const mutations = {
         state.currentSong = song
     },
     [types.SET_DISC](state, singer) {
-        console.log(singer, 8888)
         state.disc = singer
+    },
+    [types.SET_TOP_LIST](state, item) {
+        console.log(item, 88881111)
+        state.topList = item
     }
 }
 export default mutations

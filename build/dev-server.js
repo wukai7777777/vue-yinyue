@@ -51,6 +51,7 @@ apiRouter.get('/lyric', function(req, res) {
     }).then((response) => {
         var ret = response.data;
         if (typeof ret === 'string') {
+
             var reg = /^\w+\(({[^()]+})\)$/
             var matches = ret.match(reg)
             if (matches) {
@@ -73,13 +74,10 @@ apiRouter.get('/getSongList', function(req, res) {
         params: req.query
     }).then((response) => {
         var ret = response.data;
-
-        console.time('time')
         var farst = ret.indexOf('{');
         var last = ret.lastIndexOf('}')
-        console.timeEnd('time')
-
         ret = ret.substring(farst, last)+'}'
+
         ret = JSON.parse(ret)
         res.json(ret)
     }).catch((e) => {

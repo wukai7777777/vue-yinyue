@@ -452,11 +452,21 @@
 
           if(this.currentLyric) {
             this.currentLyric.stop()
+            this.currentTime = 0
+            this.playingLyric = ''
+            this.currentLineNum = 0
           }
-          this.$nextTick(() => {
+          clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
             this.$refs.audio.play()
             this.getLyric()
-          })
+          }, 200);
+
+
+          // this.$nextTick(() => {
+          //   this.$refs.audio.play()
+          //   this.getLyric()
+          // })
         },
         playing() {
           let player = this.$refs.audio;

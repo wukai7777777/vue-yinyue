@@ -55,6 +55,7 @@ export function getSongList(disstid) {
       disstid,
       type: 1,
       json: 1,
+      pcachetime: +new Date(),
       utf8: 1,
       onlysong: 0,
       platform: 'yqq',
