@@ -1,79 +1,116 @@
 <template>
-  <div class="recommend">
-      <div>
-        <div class="slider-wrapper">
+  <div class="search">
+    <div class="search-box-wrapper">
+      <search-box ref="searchBox" @changeQuery="changeQuery"></search-box>
+    </div>
+    <div class="shortcut-wrapper">
+      <scroll class="shortcut">
+        <div>
+          <div class="hot-key" v-show="!query">
+            <h1 class="title">热门搜索</h1>
+            <ul>
+              <li @click="selectQuery(item.k)" class="item" v-for="item in hotKey">
+                <span>{{item.k}}</span>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="recommend-list">
-          <h1 class="list-title">热门歌单推荐</h1>
-          <ul>
-            <li></li>
-          </ul>
-        </div>
-      </div>
-      <div class="loading-container"></div>
+      </scroll>
+    </div>
+    <div class="search-result" v-show="query">
+      <suggest :show-singer="showSinger" :query="query"></suggest>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmsscript-6">
-  import {getRecommend} from 'api/recommend'
+  import SearchBox from 'base/search-box/search-box'
+  import {getHotKey} from 'api/search.js'
+  import Scroll from 'base/scroll/scroll'
+  import Suggest from 'components/suggest/suggest'
+
   export default {
+    data(){
+      return {
+        hotKey: [],
+        showSinger: true,
+        query: ''
+      }
+    },
+    components: {
+      SearchBox,
+      Scroll,
+      Suggest
+    },
     created() {
-      getRecommend().then((res) => {
-        if (res.code === 0) {
-          console.log(res)
-        }
-      })
+      this._getHotKey()
+    },
+    methods: {
+      _getHotKey() {
+        getHotKey().then((res)=>{
+          if(res.code === 0){
+            this.hotKey = res.data.hotkey.slice(0, 10)
+          }
+        })
+      },
+      selectQuery(query) {
+        this.$refs.searchBox.selectQuery(query)
+      },
+      changeQuery(query) {
+        this.query = query
+      }
     }
   }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
 
-  .recommend
-    position: fixed
-    width: 100%
-    top: 88px
-    bottom: 0
-    .recommend-content
-      height: 100%
-      overflow: hidden
-      .slider-wrapper
-        position: relative
-        width: 100%
+  .search
+    .search-box-wrapper
+      margin: 20px
+    .shortcut-wrapper
+      position: fixed
+      top: 178px
+      bottom: 0
+      width: 100%
+      .shortcut
+        height: 100%
         overflow: hidden
-      .recommend-list
-        .list-title
-          height: 65px
-          line-height: 65px
-          text-align: center
-          font-size: $font-size-medium
-          color: $color-theme
-        .item
-          display: flex
-          box-sizing: border-box
-          align-items: center
-          padding: 0 20px 20px 20px
-          .icon
-            flex: 0 0 60px
-            width: 60px
-            padding-right: 20px
-          .text
-            display: flex
-            flex-direction: column
-            justify-content: center
-            flex: 1
-            line-height: 20px
-            overflow: hidden
+        .hot-key
+          margin: 0 20px 20px 20px
+          .title
+            margin-bottom: 20px
             font-size: $font-size-medium
-            .name
-              margin-bottom: 10px
-              color: $color-text
-            .desc
-              color: $color-text-d
-      .loading-container
-        position: absolute
-        width: 100%
-        top: 50%
-        transform: translateY(-50%)
+            color: $color-text-l
+          .item
+            display: inline-block
+            padding: 5px 10px
+            margin: 0 20px 10px 0
+            border-radius: 6px
+            background: $color-highlight-background
+            font-size: $font-size-medium
+            color: $color-text-d
+        .search-history
+          position: relative
+          margin: 0 20px
+          .title
+            display: flex
+            align-items: center
+            height: 40px
+            font-size: $font-size-medium
+            color: $color-text-l
+            .text
+              flex: 1
+            .clear
+              extend-click()
+              .icon-clear
+                font-size: $font-size-medium
+                color: $color-text-d
+    .search-result
+      position: fixed
+      width: 100%
+      top: 178px
+      bottom: 0
 </style>
