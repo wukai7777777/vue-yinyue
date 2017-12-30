@@ -7,7 +7,7 @@
      ref="suggest"
      >
         <ul class="suggest-list">
-            <li class="suggest-item" v-for="item in result">
+            <li @click="selectItem(item)" class="suggest-item" v-for="item in result">
                 <div class="icon">
                     <i :class="getIcon(item)"></i>
                 </div>
@@ -28,6 +28,8 @@
     import Suggest from 'components/suggest/suggest'
     import {search} from 'api/search'
     import {createSong} from 'common/js/song.js'
+    import Singer from 'common/js/singer'
+    import {mapMutations} from 'vuex'
     const TYPE_SINGER = 'singer'
     const perpage = 30;
     export default{
@@ -55,6 +57,9 @@
             Suggest
         },
         methods: {
+            ...mapMutations({
+                setSinger: 'SET_SINGER'
+            }),
             _search() {
                 this.page = 1
                 this.hasMore = true
@@ -109,6 +114,18 @@
                     ret = ret.concat(this._normalData(data.song.list))
                 }
                 return ret
+            },
+            selectItem(item) {
+                if(item.type === TYPE_SINGER) {
+                    let singer = new Singer({
+                        id: item.singermid,
+                        name: item.singername
+                    })
+                    this.$router.push({
+                        path:`/search/${singer.id}`
+                    })
+                    this.setSinger(singer)
+                }
             },
             _normalData(list) {
                 let ret = []

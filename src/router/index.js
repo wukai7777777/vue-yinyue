@@ -11,44 +11,41 @@ import TopList from 'components/top-list/top-list'
 Vue.use(Router)
 
 export default new Router({
-    routes: [
-        {
+    routes: [{
             path: '/',
             redirect: '/recommend'
         },
         {
             path: '/recommend',
             component: Recommend,
-            children: [
-                {
-                    path: ':id',
-                    component: Disc
-                }
-            ]
+            children: [{
+                path: ':id',
+                component: Disc
+            }]
         },
         {
             path: '/singer',
             component: Singer,
-            children: [
-                {
-                    path: ':id',
-                    component: SingerDetail
-                }
-            ]
+            children: [{
+                path: ':id',
+                component: SingerDetail
+            }]
         },
         {
             path: '/rank',
             component: Rank,
-            children: [
-                {
-                    path: ':id',
-                    component: TopList
-                }
-            ]
+            children: [{
+                path: ':id',
+                component: TopList
+            }]
         },
         {
             path: '/search',
-            component: Search
+            component: Search,
+            children: [{
+                path: ':id',
+                component: SingerDetail
+            }]
         }
     ]
 })
