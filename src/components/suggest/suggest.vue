@@ -5,6 +5,8 @@
      :pullup="pullup"
      @scrollToEnd="searchMore"
      ref="suggest"
+     @beforeScroll="listScroll"
+     :before-scroll="beforeScroll"
      >
         <ul class="suggest-list">
             <li @click="selectItem(item)" class="suggest-item" v-for="item in result">
@@ -17,8 +19,8 @@
             </li>
             <loading v-show="hasMore" title=""></loading>
         </ul>
-        <div class="no-result-wrapper">
-
+        <div class="no-result-wrapper" v-show="!hasMore && !result.length">
+            <no-result title="暂没有数据...."></no-result>
         </div>
     </scroll>
 </template>
@@ -29,7 +31,8 @@
     import {search} from 'api/search'
     import {createSong} from 'common/js/song.js'
     import Singer from 'common/js/singer'
-    import {mapMutations} from 'vuex'
+    import {mapMutations, mapActions} from 'vuex'
+    import NoResult from 'base/no-result/no-result'
     const TYPE_SINGER = 'singer'
     const perpage = 30;
     export default{
@@ -39,6 +42,10 @@
                 default: '',
             },
             showSinger: {
+                type: Boolean,
+                default: true
+            },
+            beforeScroll: {
                 type: Boolean,
                 default: true
             }
@@ -54,12 +61,19 @@
         components: {
             Scroll,
             Loading,
-            Suggest
+            Suggest,
+            NoResult
         },
         methods: {
             ...mapMutations({
                 setSinger: 'SET_SINGER'
             }),
+            ...mapActions([
+                'insertSong'
+            ]),
+            listScroll() {
+                this.$emit('blurInput')
+            },
             _search() {
                 this.page = 1
                 this.hasMore = true
@@ -88,7 +102,6 @@
                 }else{
                     this.hasMore = true
                     this.page ++
-                    console.log(1212)
                 }
             },
             getIcon(item) {
@@ -125,7 +138,10 @@
                         path:`/search/${singer.id}`
                     })
                     this.setSinger(singer)
+                }else{
+                    this.insertSong(item)
                 }
+                this.$emit('select', item)
             },
             _normalData(list) {
                 let ret = []

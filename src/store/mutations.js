@@ -29,8 +29,10 @@ const mutations = {
         state.disc = singer
     },
     [types.SET_TOP_LIST](state, item) {
-        console.log(item, 88881111)
         state.topList = item
+    },
+    [types.SET_SEARCH_HISTORY](state, query) {
+        state.searchHistory = query
     }
 }
 export default mutations

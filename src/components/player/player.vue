@@ -445,6 +445,7 @@
       },
       watch: {
         currentSong(newSong, oldSong) {
+          console.log(this.$store.getters, 88888)
 
           if(newSong.id === oldSong.id){
             return
