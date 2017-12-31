@@ -33,6 +33,7 @@
     import Singer from 'common/js/singer'
     import {mapMutations, mapActions} from 'vuex'
     import NoResult from 'base/no-result/no-result'
+
     const TYPE_SINGER = 'singer'
     const perpage = 30;
     export default{
@@ -141,6 +142,7 @@
                 }else{
                     this.insertSong(item)
                 }
+                
                 this.$emit('select', item)
             },
             _normalData(list) {
@@ -152,6 +154,9 @@
                 });
                 console.log(ret)
                 return ret
+            },
+            refresh() {
+                this.$refs.suggest.refresh()
             }
         },
         watch: {

@@ -10,12 +10,19 @@ function insertSearch(arr, val, comparCallBack, maxLen) {
     }
 
     if(index>0) {
-        arr.slice(index, 1)
+        arr.splice(index, 1)
     }
     arr.unshift(val)
 
     if(maxLen && maxLen>15) {
         arr.pop()
+    }
+}
+
+function deleteFromSearch(arr, comparCallBack) {//删除搜索历史项
+    let index = arr.findIndex(comparCallBack);
+    if(index > -1) {
+        arr.splice(index, 1)
     }
 }
 
@@ -27,6 +34,23 @@ export function saveSearch(query) {
     }, SEARCH_MAX_LEN)
 
     storage.set(SEARCH_KEY, searchArr) //缓存search
-    console.log(searchArr, 99999)
     return searchArr
+}
+
+export function loadSearch() {
+    return storage.get(SEARCH_KEY, [])
+}
+
+export function deleteSearch(query) {
+    let searchArr = storage.get(SEARCH_KEY, [])
+    deleteFromSearch(searchArr, (item) => {
+        return item === query
+    })
+    storage.set(SEARCH_KEY, searchArr)
+    return searchArr
+}
+
+export function clearSearch() {
+    storage.remove(SEARCH_KEY)
+    return []
 }

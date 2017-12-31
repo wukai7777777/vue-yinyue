@@ -3,10 +3,10 @@
     <div class="search-box-wrapper">
       <search-box ref="searchBox" @changeQuery="changeQuery"></search-box>
     </div>
-    <div class="shortcut-wrapper">
-      <scroll class="shortcut">
+    <div class="shortcut-wrapper" v-show="!query" ref="shortcutWrapper">
+      <scroll class="shortcut" ref="shortcut" :data="searchHistory">
         <div>
-          <div class="hot-key" v-show="!query">
+          <div class="hot-key">
             <h1 class="title">热门搜索</h1>
             <ul>
               <li @click="selectQuery(item.k)" class="item" v-for="item in hotKey">
@@ -14,11 +14,20 @@
               </li>
             </ul>
           </div>
+          <div class="search-history" v-show="searchHistory.length">
+            <h1 class="title">
+              <span class="text">搜索历史</span>
+              <span class="clear" @click="clearSearchHistory">
+                <i class="icon-clear"></i>
+              </span>
+            </h1>
+            <search-list :searches="searchHistory" @selectItem="selectQuery" @deleteItem="deleteSearchHistory"></search-list>
+          </div>
         </div>
       </scroll>
     </div>
-    <div class="search-result" v-show="query">
-      <suggest @select="saveSaerch" @blurInput="blurInput" :show-singer="showSinger" :query="query"></suggest>
+    <div class="search-result" v-show="query" ref="searchResult">
+      <suggest @select="saveSearchHistory(query)" @blurInput="blurInput" :show-singer="showSinger" :query="query" ref="suggest"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -29,9 +38,12 @@
   import {getHotKey} from 'api/search.js'
   import Scroll from 'base/scroll/scroll'
   import Suggest from 'components/suggest/suggest'
-  import {mapActions} from 'vuex'
-
+  import {mapActions, mapGetters} from 'vuex'
+  import SearchList from 'base/search-list/search-list'
+  import {playListMixin} from 'common/js/playListMixin'
+  
   export default {
+    mixins: [playListMixin],
     data(){
       return {
         hotKey: [],
@@ -39,18 +51,34 @@
         query: ''
       }
     },
+    computed: {
+      ...mapGetters([
+        'searchHistory'
+      ])
+    },
     components: {
       SearchBox,
       Scroll,
-      Suggest
+      Suggest,
+      SearchList
     },
     created() {
       this._getHotKey()
+      console.log(this.$store.getters)
     },
     methods: {
       ...mapActions([
-        'saveSearchHistory'
+        'saveSearchHistory',
+        'deleteSearchHistory',
+        'clearSearchHistory'
       ]),
+       handleMixin(playList) {
+          let bottom = playList.length>0 ? '60px' : ''
+          this.$refs.shortcutWrapper.style.bottom = bottom
+          this.$refs.shortcut.refresh()
+          this.$refs.searchResult.style.bottom = bottom
+          this.$refs.suggest.refresh()
+      },
       _getHotKey() {
         getHotKey().then((res)=>{
           if(res.code === 0){
@@ -67,9 +95,21 @@
       blurInput() {
         this.$refs.searchBox.blurInput()
       },
-      saveSaerch() {
-        console.log(111111111)
-        this.saveSearchHistory(this.query)
+      // saveSaerch() {
+      //   this.saveSearchHistory(this.query)
+      // },
+      // deleteItem(query) {
+      //   this.deleteSearchHistory(query)
+      // },
+      // clearAll() {
+      //   this.clearSearchHistory()
+      // }
+    },
+    watch: {
+      query(newQuery) {
+        if(newQuery) {
+          this.$refs.shortcut.refresh()
+        }
       }
     }
   }
