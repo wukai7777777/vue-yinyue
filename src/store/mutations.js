@@ -35,7 +35,7 @@ const mutations = {
         state.searchHistory = query
     },
     [types.SET_PLAY_HISTORY](state, song) {
-        state.savePlayHistory = song
+        state.playHistory = song
     }
 }
 export default mutations

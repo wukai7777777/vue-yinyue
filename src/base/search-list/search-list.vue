@@ -1,13 +1,13 @@
 <template>
   <div class="search-list">
-      <ul>
-          <li @click="selectItem(item)" class="search-item" v-for="item in searches">
+      <transition-group tag="ul" name="list">
+          <li :key="item" @click="selectItem(item)" class="search-item" v-for="item in searches">
               <span class="text">{{item}}</span>
               <span class="icon" @click.stop="deleteItem(item)">
                   <i class="icon-delete"></i>
               </span>
           </li>
-      </ul>
+      </transition-group>
   </div>
 </template>
 

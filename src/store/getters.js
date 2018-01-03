@@ -22,4 +22,4 @@ export const topList = state => state.topList
 
 export const searchHistory = state => state.searchHistory
 
-export const savePlayhHistory = state => state.savePlayhHistory
+export const playHistory = state => state.playHistory

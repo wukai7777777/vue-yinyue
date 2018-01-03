@@ -2,7 +2,7 @@ import * as types from './mutation-type'
 import { playMode } from 'common/js/config'
 import { shuffle } from 'common/js/util'
 import Song from '../common/js/song';
-import { saveSearch, deleteSearch, clearSearch } from 'common/js/chash'
+import { saveSearch, deleteSearch, clearSearch, saveSong } from 'common/js/chash'
 
 function getIndex(list, song) {
     let num = list.findIndex((item) => {
@@ -118,4 +118,9 @@ export const deleteSongList = function({ state, commit }, song) {
     commit(types.SET_SEQUENCE_LIST, [])
     commit(types.SET_CURRENT_INDEX, -1)
     commit(types.SET_PLAYING_STATE, false)
+}
+
+//保存最近播放歌曲到本地存储
+export const savePlayHistory = function({ commit }, song) {
+    commit(types.SET_PLAY_HISTORY, saveSong(song))
 }

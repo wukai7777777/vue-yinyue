@@ -72,8 +72,14 @@ export const searchMixin = {
             query: ''
         }
     },
+    computed: {
+        ...mapGetters([
+            'searchHistory'
+        ])
+    },
     methods: {
         ...mapActions([
+            'deleteSearchHistory',
             'saveSearchHistory'
         ]),
         selectQuery(query) {

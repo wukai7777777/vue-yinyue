@@ -54,9 +54,6 @@
       }
     },
     computed: {
-      ...mapGetters([
-        'searchHistory'
-      ]),
       dataRefresh() {
         return hotKey.concat(this.searchHistory)
       }
@@ -70,11 +67,9 @@
     },
     created() {
       this._getHotKey()
-      console.log(this.$store.getters)
     },
     methods: {
       ...mapActions([
-        'deleteSearchHistory',
         'clearSearchHistory'
       ]),
        handleMixin(playList) {

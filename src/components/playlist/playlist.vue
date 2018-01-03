@@ -9,7 +9,7 @@
                       <span class="clear" @click="showConfirm"><i class="icon-clear"></i></span>
                   </h1>
               </div>
-              <scroll class="list-content" ref="listContent">
+              <scroll class="list-content" :refresh-delay="refreshDelay" ref="listContent" :data="sequenceList">
                   <transition-group name="list" ref="list" tag="ul">
                       <li ref="items" @click="selectItem(item, index)" :key="item.id" class="item" v-for="(item, index) in sequenceList">
                           <i class="current" :class="iconPlay(item)"></i>
@@ -50,7 +50,8 @@ import AddSong from 'components/add-song/add-song'
         mixins: [playerMixin],
         data() {
             return {
-                showflag: false
+                showflag: false,
+                refreshDelay: 100
             }
         },
         computed: {
