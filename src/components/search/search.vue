@@ -17,7 +17,7 @@
           <div class="search-history" v-show="searchHistory.length">
             <h1 class="title">
               <span class="text">搜索历史</span>
-              <span class="clear" @click="clearSearchHistory">
+              <span class="clear" @click="clearAll">
                 <i class="icon-clear"></i>
               </span>
             </h1>
@@ -29,6 +29,7 @@
     <div class="search-result" v-show="query" ref="searchResult">
       <suggest @select="saveSearchHistory(query)" @blurInput="blurInput" :show-singer="showSinger" :query="query" ref="suggest"></suggest>
     </div>
+    <confirm :text="'你确定要清空历史列表吗？'" ref="confirm" @confirm="confirm"></confirm>
     <router-view></router-view>
   </div>
 </template>
@@ -40,27 +41,32 @@
   import Suggest from 'components/suggest/suggest'
   import {mapActions, mapGetters} from 'vuex'
   import SearchList from 'base/search-list/search-list'
-  import {playListMixin} from 'common/js/playListMixin'
+  import Confirm from 'base/confirm/confirm'
+  import {playListMixin, searchMixin} from 'common/js/playListMixin'
+
   
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, searchMixin],
     data(){
       return {
         hotKey: [],
         showSinger: true,
-        query: ''
       }
     },
     computed: {
       ...mapGetters([
         'searchHistory'
-      ])
+      ]),
+      dataRefresh() {
+        return hotKey.concat(this.searchHistory)
+      }
     },
     components: {
       SearchBox,
       Scroll,
       Suggest,
-      SearchList
+      SearchList,
+      Confirm
     },
     created() {
       this._getHotKey()
@@ -68,7 +74,6 @@
     },
     methods: {
       ...mapActions([
-        'saveSearchHistory',
         'deleteSearchHistory',
         'clearSearchHistory'
       ]),
@@ -86,29 +91,27 @@
           }
         })
       },
-      selectQuery(query) {
-        this.$refs.searchBox.selectQuery(query)
-      },
-      changeQuery(query) {
-        this.query = query
-      },
-      blurInput() {
-        this.$refs.searchBox.blurInput()
-      },
+      
       // saveSaerch() {
       //   this.saveSearchHistory(this.query)
       // },
       // deleteItem(query) {
       //   this.deleteSearchHistory(query)
       // },
-      // clearAll() {
-      //   this.clearSearchHistory()
-      // }
+      clearAll() {
+        this.$refs.confirm.show()
+        //this.clearSearchHistory()
+      },
+      confirm() {
+        this.clearSearchHistory()
+      }
     },
     watch: {
       query(newQuery) {
-        if(newQuery) {
-          this.$refs.shortcut.refresh()
+        if(!newQuery) {
+          setTimeout(() => {
+            this.$refs.shortcut.refresh()
+          }, 20)
         }
       }
     }
