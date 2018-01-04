@@ -24,7 +24,6 @@
         },
         methods: {
             switcheItem(index) {
-                console.log(index, 8888)
                 this.$emit('switch', index)
             }
         }
