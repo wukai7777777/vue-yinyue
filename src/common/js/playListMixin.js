@@ -93,3 +93,37 @@ export const searchMixin = {
         },
     }
 }
+
+export const favotiteMixin = {
+    computed: {
+        ...mapGetters([
+            'favoriteList'
+        ])
+    },
+    methods:{
+        ...mapActions([
+            'saveFavoriteList',
+            'deleteFavoriteList'
+        ]),
+        getFavoriteIcon(song) {
+            if(this.isFvaorite(song)) {
+                return 'icon-favorite'
+            }
+            return 'icon-not-favorite'
+        },
+        toggleFavorite(song) {
+            if(this.isFvaorite(song)) {
+                this.deleteFavoriteList(song)
+            }else{
+                this.saveFavoriteList(song)
+            }
+            //this.getFavoriteIcon(song)
+        },
+        isFvaorite(song) {
+            let index = this.favoriteList.findIndex((item) => {
+                return item.id === song.id
+            })
+            return index > -1
+        }
+    }
+}

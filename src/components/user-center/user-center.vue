@@ -1,27 +1,30 @@
 <template>
     <transition name="slide">
         <div class="user-center">
-            <div class="back">
+            <div class="back" @click="back">
                 <i class="icon-back"></i>
             </div>
             <div class="switches-wrapper">
                 <switches :switches="switches" :current-index="currentIndex" @switch="selectItem"></switches>
             </div>
-            <div class="play-btn">
+            <div class="play-btn" @click="playRandom">
                 <i class="icon-play"></i>
                 <span class="text">随机播放全部</span>
             </div>
-            <div class="list-wrapper">
-                <scroll class="list-scroll">
+            <div class="list-wrapper" ref="listWrapper">
+                <scroll :data="favoriteList" class="list-scroll" ref="favoritelist" v-if="currentIndex === 0">
                     <div class="list-inner">
-
+                        <song-list :songs="favoriteList" @select="selectSong"></song-list>
                     </div>
                 </scroll>
-                <scroll class="list-scroll">
+                <scroll :data="playHistory" class="list-scroll" ref="playhistory" v-if="currentIndex === 1">
                     <div class="list-inner">
-                        
+                        <song-list :songs="playHistory" @select="selectSong"></song-list>
                     </div>
                 </scroll>
+            </div>
+            <div class="no-result-wrapper" v-show="noResult">
+                <no-result :title="noResultTitle"></no-result>
             </div>
         </div>
     </transition>
@@ -30,7 +33,14 @@
 <script>
     import Scroll from 'base/scroll/scroll'
     import Switches from 'base/switches/switches'
+    import SongList from 'base/song-list/song-list'
+    import {mapActions, mapGetters} from 'vuex'
+    import Song from 'common/js/song'
+    import {playListMixin} from 'common/js/playListMixin'
+    import NoResult from 'base/no-result/no-result'
+
     export default{
+        mixins: [playListMixin],
         data() {
             return{
                 switches: [
@@ -40,14 +50,63 @@
                 currentIndex: 0
             }
         },
+        computed:{
+            noResult(){
+                if(this.currentIndex === 0) {
+                    return !this.favoriteList.length
+                }else{
+                    return !this.playHistory.length
+                }
+            },
+            noResultTitle(){
+                if(this.currentIndex === 0) {
+                    return '暂无最喜欢'
+                }else{
+                    return '暂无最近播放'
+                }
+            },
+            ...mapGetters([
+                'playHistory',
+                'favoriteList'
+            ])
+        },
         components: {
             Scroll,
-            Switches
+            Switches,
+            SongList,
+            NoResult
         },
         methods: {
+            handleMixin(playList) {
+                let bottom = playList.length > 0 ? '60px' : 0
+                this.$refs.listWrapper.style.bottom = bottom
+                this.$refs.favoritelist && this.$refs.favoritelist.refresh()
+                this.$refs.playhistory && this.$refs.playhistory.refresh()
+            },
             selectItem(index) {
                 this.currentIndex = index
-            }
+            },
+            back() {
+                this.$router.back()
+            },
+            selectSong(item) {
+                this.insertSong(new Song(item))
+            },
+            playRandom() {
+                let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
+                if(!list.length) {
+                    return
+                    
+                }
+                list = list.map((item) => {
+                    return new Song(item)
+                })
+                this.randomPlay({list})
+            },
+            ...mapActions([
+                'insertSong',
+                'randomPlay'
+            ])
         }
     }
 </script>

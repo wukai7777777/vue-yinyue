@@ -77,8 +77,8 @@
               <div class="icon i-right"  :class="disableCla">
                 <i class="icon-next" @click="next"></i>
               </div>
-              <div class="icon i-right">
-                <i class="icon icon-not-favorite"></i>
+              <div class="icon i-right" @click="toggleFavorite(currentSong)">
+                <i class="icon" :class="getFavoriteIcon(currentSong)"></i>
               </div>
             </div>
           </div>
@@ -106,7 +106,7 @@
       </div>
     </transition>
     <playlist ref="playlist"></playlist>
-    <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime($event)" @ended="end"></audio>
+    <audio :src="currentSong.url" ref="audio" @play="ready" @error="error" @timeupdate="updateTime($event)" @ended="end"></audio>
   </div>
 </template>
 <script>
@@ -121,13 +121,13 @@
     import Lyric from 'lyric-parser'
     import Scroll from 'base/scroll/scroll'
     import Playlist from 'components/playlist/playlist'
-    import {playerMixin} from 'common/js/playListMixin'
+    import {playerMixin, favotiteMixin} from 'common/js/playListMixin'
 
     const transform = prefixStyle('transform')
     const transitionDuration = prefixStyle('transitionDuration')
 
     export default {
-      mixins: [playerMixin],
+      mixins: [playerMixin, favotiteMixin],
       data() {
         return{
           radius: 32,
@@ -274,6 +274,7 @@
           }
           if(this.playList.length == 1) {
             this.loop()
+            return
           }else{
             let index = this.currentIndex - 1;
             if(index === -1) {
@@ -293,6 +294,7 @@
           }
           if(this.playList.length == 1) { //处理歌曲列表长度为一的边界问题
             this.loop()
+            return
           }else{
             let index = this.currentIndex + 1;
             if(index === this.playList.length) {
@@ -454,7 +456,7 @@
           this.timer = setTimeout(() => {
             this.$refs.audio.play()
             this.getLyric()
-          }, 200);
+          }, 1000);
 
 
           // this.$nextTick(() => {

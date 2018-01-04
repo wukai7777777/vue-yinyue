@@ -14,8 +14,8 @@
                       <li ref="items" @click="selectItem(item, index)" :key="item.id" class="item" v-for="(item, index) in sequenceList">
                           <i class="current" :class="iconPlay(item)"></i>
                           <span class="text">{{item.name}}</span>
-                          <span class="like">
-                              <i class="icon-not-favorite"></i>
+                          <span class="like" @click="toggleFavorite(item)">
+                              <i :class="getFavoriteIcon(item)"></i>
                           </span>
                           <span class="delete" @click.stop="deleteOne(item)">
                               <i class="icon-delete"></i>
@@ -44,10 +44,10 @@ import Scroll from 'base/scroll/scroll'
 import {mapGetters, mapMutations, mapActions} from 'vuex'
 import {playMode} from 'common/js/config'
 import Confirm from 'base/confirm/confirm'
-import {playerMixin} from 'common/js/playListMixin'
+import {playerMixin, favotiteMixin} from 'common/js/playListMixin'
 import AddSong from 'components/add-song/add-song'
     export default{
-        mixins: [playerMixin],
+        mixins: [playerMixin, favotiteMixin],
         data() {
             return {
                 showflag: false,
