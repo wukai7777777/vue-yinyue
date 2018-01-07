@@ -10,15 +10,15 @@ import store from './store'
 import 'common/stylus/index.styl'
 
 /* eslint-disable no-unused-vars */
-// import vConsole from 'vconsole'
+import vConsole from 'vconsole'
 
-fastclick.attach(document.body)
+fastclick.attach(document.body) // 解决click 在移动端延迟问题
 
 // Vue.use(VueLazyload, {
 //   loading: require('common/image/default.png')
 // })
 
-// or with options
+// or with options 图片懒加载
 Vue.use(VueLazyload, {
     //preLoad: 1.3,
     //error: 'dist/error.png',

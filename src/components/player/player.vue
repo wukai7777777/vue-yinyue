@@ -25,8 +25,8 @@
           >
             <div class="middle-l" ref="middleL">
               <div class="cd-wrapper" ref="cdWrapper">
-                <div class="cd">
-                  <img :class="playingRotate" :src="currentSong.image" class="image">
+                <div class="cd" :class="playingRotate">
+                  <img :src="currentSong.image" class="image">
                 </div>
               </div>
               <div class="playing-lyric-wrapper">
@@ -159,7 +159,7 @@
            return this.currentTiem / this.currentSong.duration;
          },
          playingRotate() {
-           return this.playing ? 'play' : ''
+           return this.playing ? 'play' : 'play pause'
          }
       },
       components: {
@@ -309,6 +309,7 @@
         },
         ready() {
           this.songReady = true;
+          console.log(this.songReady, 'ready')
           this.savePlayHistory(this.currentSong)
         },
         error() {
@@ -316,6 +317,7 @@
         },
         updateTime(e) {
           this.currentTiem = e.target.currentTime;
+            console.log('updateTime')
         },
         setProgessBar(precent) {
           let currentTime = this.currentSong.duration*precent
@@ -327,8 +329,6 @@
             this.currentLyric.seek(currentTime*1000)
           }
         },
-        
-        
         format(interval) {
           let time = ''
           interval = interval | 0;
@@ -383,13 +383,12 @@
           if(!this.touch.moved) {
             this.touch.moved = true
           }
-          this.touch.precent = disX/window.innerWidth
-          this.touch.direction = disX
           const left = (this.currentShow === 'cd' ? 0 : -window.innerWidth) 
           const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + disX))
+          this.touch.percent = Math.abs(offsetWidth/window.innerWidth)
           this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px, 0, 0)`
           this.$refs.lyricList.$el.style[transitionDuration] = 0
-          this.$refs.middleL.style.opacity = 1 - Math.abs(this.touch.precent)
+          this.$refs.middleL.style.opacity = 1 - this.touch.percent
           this.$refs.middleL.style[transitionDuration] = 0
         },
         middleTouchEnd() {
@@ -399,23 +398,24 @@
 
           let offsetWidth
           let opacity
-
-          if(Math.abs(this.touch.precent) > 0.1 && this.touch.direction < 0) { //从右到左
-            offsetWidth = -window.innerWidth
-            this.currentShow = 'lyric'
-            opacity = 0
+          if (this.currentShow === 'cd') {
+            if (this.touch.percent > 0.1) {
+              offsetWidth = -window.innerWidth
+              opacity = 0
+              this.currentShow = 'lyric'
+            } else {
+              offsetWidth = 0
+              opacity = 1
+            }
           } else {
-            offsetWidth = 0
-            opacity = 1
-          }
-
-          if(Math.abs(this.touch.precent) > 0.1 && this.touch.direction > 0) { //从左到右
-            offsetWidth = 0
-            this.currentShow = 'cd'
-            opacity = 1
-          }else{
-            offsetWidth = -window.innerWidth
-            opacity = 0
+            if (this.touch.percent < 0.9) {
+              offsetWidth = 0
+              this.currentShow = 'cd'
+              opacity = 1
+            } else {
+              offsetWidth = -window.innerWidth
+              opacity = 0
+            }
           }
           const time = 300
           this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px, 0, 0)`
@@ -549,9 +549,9 @@
               box-sizing: border-box
               border: 10px solid rgba(255, 255, 255, 0.1)
               border-radius: 50%
-              .play
+              &.play
                 animation: rotate 20s linear infinite
-              .pause
+              &.pause
                 animation-play-state: paused
               .image
                 position: absolute
