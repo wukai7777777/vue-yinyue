@@ -309,7 +309,6 @@
         },
         ready() {
           this.songReady = true;
-          console.log(this.songReady, 'ready')
           this.savePlayHistory(this.currentSong)
         },
         error() {
@@ -317,7 +316,6 @@
         },
         updateTime(e) {
           this.currentTiem = e.target.currentTime;
-            console.log('updateTime')
         },
         setProgessBar(precent) {
           let currentTime = this.currentSong.duration*precent
