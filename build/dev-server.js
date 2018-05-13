@@ -1,4 +1,7 @@
 require('./check-versions')()
+var fs = require('fs');
+var path = require('path')
+
 
 var config = require('../config')
 if (!process.env.NODE_ENV) {
@@ -76,7 +79,7 @@ apiRouter.get('/getSongList', function(req, res) {
         var ret = response.data;
         var farst = ret.indexOf('{');
         var last = ret.lastIndexOf('}')
-        ret = ret.substring(farst, last)+'}'
+        ret = ret.substring(farst, last) + '}'
 
         ret = JSON.parse(ret)
         res.json(ret)
@@ -97,6 +100,29 @@ apiRouter.get('/taobaoke', function(req, res) {
         console.log(e)
     })
 })
+
+// apiRouter.get('/taobaoke', function(req, res) { // 代理请求其他远程图片资源
+//     //var url = 'https://jz-c.doumi.com/api/v3/client/tbk/lists'
+//     var url = 'http://img.zcool.cn/community/0142135541fe180000019ae9b8cf86.jpg@1280w_1l_2o_100sh.png'
+//     axios.get(url, {
+//         // headers: {
+//         //     accessToken: "LmRlaxBbMj/BaaMW6kNiQM0SBrhZ/lJPAUwjhppDYhWNkradyU4XOvEZk2aaczK0zFfT7Zi6"
+//         // },
+//         params: req.query
+//     }).then((response) => {
+//         console.log(response, '数据')
+//         res.json(response.data)
+//     }).catch((e) => {
+//         console.log(e)
+//     })
+// })
+
+// apiRouter.get('/taobaoke', function(req, res) { // 开启一个路由请求本地资源 图片
+//     var imgData = fs.readFileSync(path.join(__dirname, '../dist/static/1.png'))
+//         //发送 图片 Buffer 对象到前端
+//     res.send(imgData)
+// })
+
 
 app.use('/api', apiRouter)
 

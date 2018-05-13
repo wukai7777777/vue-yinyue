@@ -1,5 +1,6 @@
 <template>
   <div class="recommend" ref="recommend">
+    <div ref="imgBox" class="imgBox"></div>
       <scroll ref="scroll" class="recommend-content" :data="dissList">
         <div>
           <div class="slider-wrapper" v-if="slideData.length">
@@ -59,9 +60,37 @@
       this._getRecommend()
       this._getDissList()
 
-      taobaoke().then((res) => {
-        //console.log(res, 222222)
-      })
+      // taobaoke().then((res) => {
+      //   console.log(res, '淘宝客list')
+      // })
+
+      // this.imgUrl('/api/taobaoke').then((file) => { // ajax 请求 图片资源
+      //   var img = document.createElement('img')
+      //   if (typeof FileReader == 'function') {
+      //     var reader = new FileReader();
+      //     reader.onload = function(e) {
+      //         img.src = e.target.result;
+      //     };
+      //     reader.readAsDataURL(file);
+      //   }else{
+      //     img.onload = function() {
+      //       console.log('成功')
+      //       window.URL.revokeObjectURL(img.src)
+      //     }
+      //     img.onerr = function(e) {
+      //       console.log(e, '失败')
+      //     }
+      //     img.src = window.URL.createObjectURL(file);
+      //   }
+      //   let box = this.$refs.imgBox
+      //   box.appendChild(img)
+      // })
+
+      //this.getAjax().then(console.log, console.error)
+
+      // this.imgUrl().then(function(data) {
+      //     console.log(data, 'blob')
+      // })
     },
     methods: {
       ...mapMutations({
@@ -97,8 +126,49 @@
           this.checkLoadImg = true
           this.$refs.scroll.refresh();
         }
+      },
+      getAjax() {
+        const url = '/api/taobaoke'
+        return new Promise(function(resolve, reject) {
+          let xhr = new XMLHttpRequest()
+
+          xhr.open('GET', url, true)
+          xhr.onload = function(e) {
+            if(this.status === 200) {
+              let result = JSON.parse(this.responseText);
+              resolve(result)
+            }
+          }
+          xhr.onerror = function(err) {
+            reject(err)
+          }
+          xhr.send()
+        })
+      },
+      imgUrl(url) {
+          return new Promise(function(resolve, reject) {
+              let xhr = new XMLHttpRequest()
+              xhr.open('GET', url)
+              xhr.responseType = 'blob'
+              xhr.setRequestHeader("client_type", "DESKTOP_WEB");
+              xhr.setRequestHeader("desktop_web_access_key", Math.random().toString());
+
+              xhr.onload = function() {
+                  if (xhr.status === 200) {
+                    let blob = xhr.response
+                    console.log(xhr, '数据blob')
+                      resolve(blob)
+                  } else {
+                      reject(new Error('图片加载失败：' + xhr.statusText))
+                  }
+              }
+              xhr.onerror = function(err) {
+                  reject(err)
+              }
+              xhr.send()
+          })
       }
-    }
+  }
   }
 </script>
 
