@@ -42,6 +42,7 @@
   import Loading from 'base/loading/loading'
   import { playListMixin } from 'common/js/playListMixin.js'
   import {mapMutations} from 'vuex'
+  import {delay} from 'common/js/util.js'
 
   export default {
     mixins: [playListMixin],
@@ -60,6 +61,25 @@
       this._getRecommend()
       this._getDissList()
 
+
+      // while(true) {
+      //   await delay(500)
+      //   console.log(1212121212);
+      // }
+      let p = (async () => {
+        while(true) {
+          console.time(111111)
+          await delay(500)
+          console.timeEnd(111111)
+        }
+      })()
+      let time = new Date();
+      let dis = 0
+      setInterval(()=>{
+        dis = time-new Date();
+        console.log(dis, 222222)
+        time = new Date()
+      }, 500)
       // taobaoke().then((res) => {
       //   console.log(res, '淘宝客list')
       // })

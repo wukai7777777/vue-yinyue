@@ -25,3 +25,10 @@ export function debounce(func, delay) {
         }, delay)
     }
 }
+
+export async function delay (duration) {
+  return new Promise(rs => {
+    setTimeout(() => rs(), duration)
+  })
+}
+    
