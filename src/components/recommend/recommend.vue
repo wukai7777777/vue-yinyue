@@ -62,24 +62,25 @@
       this._getDissList()
 
 
+      //对比两种循环性能好坏
       // while(true) {
       //   await delay(500)
       //   console.log(1212121212);
       // }
-      let p = (async () => {
-        while(true) {
-          console.time(111111)
-          await delay(500)
-          console.timeEnd(111111)
-        }
-      })()
-      let time = new Date();
-      let dis = 0
-      setInterval(()=>{
-        dis = time-new Date();
-        console.log(dis, 222222)
-        time = new Date()
-      }, 500)
+      // let p = (async () => {
+      //   while(true) {
+      //     console.time(111111)
+      //     await delay(500)
+      //     console.timeEnd(111111)
+      //   }
+      // })()
+      // let time = new Date();
+      // let dis = 0
+      // setInterval(()=>{
+      //   dis = time-new Date();
+      //   console.log(dis, 222222)
+      //   time = new Date()
+      // }, 500)
       // taobaoke().then((res) => {
       //   console.log(res, '淘宝客list')
       // })
