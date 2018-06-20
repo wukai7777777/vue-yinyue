@@ -154,6 +154,7 @@
             this.$refs.list.$el.style.top = this.$refs.bgImage.clientHeight+'px'
         }
     }
+    
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
