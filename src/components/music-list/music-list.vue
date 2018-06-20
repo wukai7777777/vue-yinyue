@@ -62,9 +62,6 @@
                 newY: 0
             }
         },
-        updated() {
-            //console.log(this.songs, 'list')
-        },
         methods: {
             handleMixin(playList) { // mixin 处理公共方法
                 let bottom = playList.length>0 ? '60px' : 0
