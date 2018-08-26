@@ -133,3 +133,4 @@ export const saveFavoriteList = function({commit}, song) {
 export const deleteFavoriteList = function({commit}, song) {
     commit(types.SET_FAVORITE_LIST, deleteFavorite(song))
 }
+
