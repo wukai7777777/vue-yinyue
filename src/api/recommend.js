@@ -70,3 +70,24 @@ export function getSongList(disstid) {
         return Promise.resolve(res.data)
     })
   }
+
+  export function getMessage(page, pageSize) {
+    const path = '/api/message'
+    
+    const data = {
+        page,
+        pageSize,
+        userId: 0,
+        deviceToken: 'b6ded5291996d1dedcca6cce916939d1',
+        platform: 'android'
+    }
+    
+    
+    return axios.get(path, {
+        params: data
+    }).then((res) => {
+        return Promise.resolve(res)
+    }).catch((err) => {
+        return Promise.reject(err)
+    })
+  }

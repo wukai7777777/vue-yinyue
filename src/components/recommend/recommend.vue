@@ -36,7 +36,7 @@
 </template>
 
 <script>
-  import {getRecommend, getDissList, taobaoke} from 'api/recommend'
+  import {getRecommend, getDissList, taobaoke, getMessage} from 'api/recommend'
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
   import Loading from 'base/loading/loading'
@@ -60,6 +60,7 @@
     created() {
       this._getRecommend()
       this._getDissList()
+      this._getMessage(1, 10)
 
 
       //对比两种循环性能好坏
@@ -140,6 +141,13 @@
           if (res.code === 0) {
             this.dissList = res.data.list
           }
+        })
+      },
+      _getMessage(page, pagesize) {
+        getMessage(page, pagesize).then((res) => {
+          console.log(res, 'getMessage')
+        }).catch((err) =>{
+          console.log(err)
         })
       },
       ImageLoad() {

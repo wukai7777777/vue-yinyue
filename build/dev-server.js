@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+"use strict"
+
 require('./check-versions')()
 var fs = require('fs');
 var path = require('path')
@@ -99,6 +103,24 @@ apiRouter.get('/taobaoke', function(req, res) {
     }).catch((e) => {
         console.log(e)
     })
+})
+
+apiRouter.get('/message', (req, res) =>{
+    // https://jz-c.doumi.com/api/v3/client/message/index?userId=0&deviceToken=b6ded5291996d1dedcca6cce916939d1&platform=android
+    const url = 'http://jz-c.doumi.com/api/v3/client/message/zhangyu'
+    console.log(req.query)
+    axios.get(url, {
+        headers: {
+            accessToken: 'LmRlaxBLMj/BOYNTmjYiUJ0iNjiZfjLP8ezTQ+o2J0WoNyPI/Ft3z4EcIzZqNmK0zFfT7Zi6'
+        },
+        params: req.query
+    }).then((response) => {
+        console.log(response.data, '数据')
+        res.json(response.data)
+    }).catch((e) => {
+        console.log(e)
+    })
+
 })
 
 // apiRouter.get('/taobaoke', function(req, res) { // 代理请求其他远程图片资源
