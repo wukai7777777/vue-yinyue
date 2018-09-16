@@ -18,6 +18,7 @@ var express = require('express')
 var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
+var apiRouter = require('./router')
 var axios = require('axios')
 
 // default port where dev server listens for incoming traffic
@@ -29,121 +30,6 @@ var autoOpenBrowser = !!config.dev.autoOpenBrowser
 var proxyTable = config.dev.proxyTable
 
 var app = express()
-
-var apiRouter = express.Router();
-
-apiRouter.get('/getDissList', function(req, res) {
-    var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
-    axios.get(url, {
-        headers: {
-            referer: 'https://c.y.qq.com/',
-            host: 'c.y.qq.com'
-        },
-        params: req.query
-    }).then((response) => {
-        res.json(response.data)
-    }).catch((e) => {
-        console.log(e)
-    })
-})
-
-apiRouter.get('/lyric', function(req, res) {
-    var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
-    axios.get(url, {
-        headers: {
-            referer: 'https://c.y.qq.com/',
-            host: 'c.y.qq.com'
-        },
-        params: req.query
-    }).then((response) => {
-        var ret = response.data;
-        if (typeof ret === 'string') {
-
-            var reg = /^\w+\(({[^()]+})\)$/
-            var matches = ret.match(reg)
-            if (matches) {
-                ret = JSON.parse(matches[1])
-            }
-        }
-        res.json(ret)
-    }).catch((e) => {
-        console.log(e)
-    })
-})
-
-apiRouter.get('/getSongList', function(req, res) {
-    var url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
-    axios.get(url, {
-        headers: {
-            referer: 'https://c.y.qq.com/',
-            host: 'c.y.qq.com'
-        },
-        params: req.query
-    }).then((response) => {
-        var ret = response.data;
-        var farst = ret.indexOf('{');
-        var last = ret.lastIndexOf('}')
-        ret = ret.substring(farst, last) + '}'
-
-        ret = JSON.parse(ret)
-        res.json(ret)
-    }).catch((e) => {
-        console.log(e)
-    })
-})
-apiRouter.get('/taobaoke', function(req, res) {
-    var url = 'https://jz-c.doumi.com/api/v3/client/tbk/lists'
-    axios.get(url, {
-        headers: {
-            accessToken: "LmRlaxBbMj/BaaMW6kNiQM0SBrhZ/lJPAUwjhppDYhWNkradyU4XOvEZk2aaczK0zFfT7Zi6"
-        },
-        params: req.query
-    }).then((response) => {
-        res.json(response.data)
-    }).catch((e) => {
-        console.log(e)
-    })
-})
-
-apiRouter.get('/message', (req, res) =>{
-    // https://jz-c.doumi.com/api/v3/client/message/index?userId=0&deviceToken=b6ded5291996d1dedcca6cce916939d1&platform=android
-    const url = 'http://jz-c.doumi.com/api/v3/client/message/zhangyu'
-    console.log(req.query)
-    axios.get(url, {
-        headers: {
-            accessToken: 'LmRlaxBLMj/BOYNTmjYiUJ0iNjiZfjLP8ezTQ+o2J0WoNyPI/Ft3z4EcIzZqNmK0zFfT7Zi6'
-        },
-        params: req.query
-    }).then((response) => {
-        console.log(response.data, '数据')
-        res.json(response.data)
-    }).catch((e) => {
-        console.log(e)
-    })
-
-})
-
-// apiRouter.get('/taobaoke', function(req, res) { // 代理请求其他远程图片资源
-//     //var url = 'https://jz-c.doumi.com/api/v3/client/tbk/lists'
-//     var url = 'http://img.zcool.cn/community/0142135541fe180000019ae9b8cf86.jpg@1280w_1l_2o_100sh.png'
-//     axios.get(url, {
-//         // headers: {
-//         //     accessToken: "LmRlaxBbMj/BaaMW6kNiQM0SBrhZ/lJPAUwjhppDYhWNkradyU4XOvEZk2aaczK0zFfT7Zi6"
-//         // },
-//         params: req.query
-//     }).then((response) => {
-//         console.log(response, '数据')
-//         res.json(response.data)
-//     }).catch((e) => {
-//         console.log(e)
-//     })
-// })
-
-// apiRouter.get('/taobaoke', function(req, res) { // 开启一个路由请求本地资源 图片
-//     var imgData = fs.readFileSync(path.join(__dirname, '../dist/static/1.png'))
-//         //发送 图片 Buffer 对象到前端
-//     res.send(imgData)
-// })
 
 
 app.use('/api', apiRouter)

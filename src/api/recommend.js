@@ -73,7 +73,7 @@ export function getSongList(disstid) {
 
   export function getMessage(page, pageSize) {
     const path = '/api/message'
-    
+    //?set_opr_config=1&citydomain=bj&lat=40.1496&lng=116.30664
     const data = {
         page,
         pageSize,
