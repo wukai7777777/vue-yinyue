@@ -68,8 +68,7 @@ apiRouter.get('/taobaoke', function(req, res) {
     var url = 'https://jz-c.doumi.com/api/v2/client/index'
     axios.get(url, {
         headers: {
-            "accessToken": "LmRlaxBbMj/BaaMW6kNiQM0SBrhZ/lJPAUwjhppDYhWNkradyU4XOvEZk2aaczK0zFfT7Zi6",
-            
+            "AccessToken": "LmRlaxBLMj/BOYNTijZSUB0iJjhJfmLP0ezTQ+o2J0WoNyPI/Ft3z4EcIzZqNmK0zFfT7Zi6",
         },
         params: req.query
     }).then((response) => {
@@ -85,11 +84,11 @@ apiRouter.get('/message', (req, res) => {
     console.log(req.query)
     axios.get(url, {
         headers: {
-            // "referer": "https://jz-c.doumi.com/",
+            // "referer": "https://jz-c.doumi.com",
             // "Info": 'LmRlaxCeoyLhjeOmGOxb8i/hzIaDKienVXh3hp1cKrbI1KyjJkpHJ8XIN3KfXCq2yNSsoyZKZnYECEfmyMnetYin62NGmnNyIO0CJvip7rIPkQwDAn+Gl1VNAjaoyW4iX5F8swZKlidE2ZYy/RkYt4726QOTLybn0B1iZpi5DiJvARzDBsrzQrCoJmO9jTvUStWso1bKEyIAvSJG6A==',
             // "Host": 'jz-c.doumi.com',
-            // "doumi-protocol": 'https',
-            "AccessToken": 'LmRlaxBLMj/BOYNTmjYiUK0iVjhZfrLPoezTQ+o2J0WoNyPI/Ft3z4EcIzZqNmK0zFfT7Zi6',
+            // "doumi-protocol": 'https',  
+            "accessToken": 'LmRlaxBLMj/BOYNTijZSUB0iJjhJfmLP0ezTQ+o2J0WoNyPI/Ft3z4EcIzZqNmK0zFfT7Zi6',
             // "Cookie": 'ganji_jz_ac_citydomain=eyJpdiI6ImdNek5tcElqSzMxY1A5NW5FUEhxYmc9PSIsInZhbHVlIjoia2ZJYmhCb3gwbWZoNkQ0QjRcLytWUUE9PSIsIm1hYyI6IjY4MDczNzczZmY4NTgzNzFiOTBmM2I2ZDVlYjgyYjJhZjJmYjZjZDRkZjQ3MWRkMTQ0NWRhYjgwNDQ0YWJhZTkifQ%3D%3D; doumi_melon=eyJpdiI6IlhPTVNZQURUZkt3d1F1WXR2Zk4wcUE9PSIsInZhbHVlIjoiSitwSTk4ZGxsZ3dwZ2NNTEdSM2RNREVrXC9zSXJzS0ZmNE9URHcrTW8yRjhzbnV1alVcL0prUm5QRnlodm9mVjMweEJjcmh0cTJPdHpsrRlNySUFhTkUydz09IiwibWFjIjoiYzc5MWExYTg1MzI2YmRhYzY5OTIwMzAwM2NiZTA1YTczNjBlNjQ0YzMwZjhkNjY0YjEyYmFhNjBjNjI4MTJjOSJ9',
             // "User-Agent": 'DouMi/5.1.9 BuildCode/77 Platform/Android ChannelId/umeng',
             // "Connection": 'Keep-Alive'

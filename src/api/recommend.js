@@ -90,4 +90,19 @@ export function getSongList(disstid) {
     }).catch((err) => {
         return Promise.reject(err)
     })
+    // return new Promise((resolve, reject) => {
+    //     const xhr = new XMLHttpRequest()
+    //     xhr.open('GET', path)
+    //     xhr.onreadystatechange = function() {
+    //         if(+xhr.status === 200) {
+    //             console.log(121212)
+    //             // console.log(xhr.responseText, 9999)
+    //             resolve(JSON.parse(xhr.responseText))
+    //             console.log(xhr, 9999)
+    //         } else {
+    //             reject(xhr.error)
+    //         }
+    //     }
+    //     xhr.send()
+    // })
   }

@@ -108,7 +108,7 @@
       //   box.appendChild(img)
       // })
 
-      //this.getAjax().then(console.log, console.error)
+      this.getAjax().then(console.log, console.error)
 
       // this.imgUrl().then(function(data) {
       //     console.log(data, 'blob')
@@ -144,8 +144,9 @@
         })
       },
       _getMessage(page, pagesize) {
-        getMessage(page, pagesize).then((res) => {
-          console.log(res, 'getMessage')
+        getMessage(page, pagesize)
+        .then((res) => {
+          console.log(res, 'getMessage111====================')
         }).catch((err) =>{
           console.log(err)
         })
