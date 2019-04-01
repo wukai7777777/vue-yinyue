@@ -8,7 +8,10 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const PrerenderSpaPlugin = require('prerender-spa-plugin')
 
+
+console.loog( PrerenderSPAPlugin,'-=-=--=================')
 var env = config.build.env
 
 var webpackConfig = merge(baseWebpackConfig, {
@@ -90,7 +93,14 @@ var webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+    new PrerenderSPAPlugin({
+      staticDir: path.join(__dirname, '../dist'),
+      routes: ['/', '/recommend', '/singer', '/rank', '/search', '/user'],
+      renderer: new PrerenderSPAPlugin.PuppeteerRenderer({//这样写renderAfterTime生效了
+        renderAfterTime: 5000
+      })
+    })
   ]
 })
 

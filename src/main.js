@@ -5,6 +5,7 @@ import router from './router'
 import fastclick from 'fastclick'
 import VueLazyload from 'vue-lazyload'
 import store from './store'
+import MetaInfo from 'vue-meta-info'
 
 
 import 'common/stylus/index.styl'
@@ -15,9 +16,10 @@ import vConsole from 'vconsole'
 fastclick.attach(document.body) // 解决click 在移动端延迟问题
 
 // Vue.use(VueLazyload, {
-//   loading: require('common/image/default.png')
-// })
-
+    //   loading: require('common/image/default.png')
+    // })
+    
+Vue.use(MetaInfo)
 // or with options 图片懒加载
 Vue.use(VueLazyload, {
     //preLoad: 1.3,
@@ -31,5 +33,8 @@ new Vue({
     el: '#app',
     router,
     store,
-    render: h => h(App)
+    render: h => h(App),
+    mounted () {
+        document.dispatchEvent(new Event('render-event'))
+    }
 })
