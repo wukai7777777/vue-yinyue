@@ -57,7 +57,10 @@ const UserCenter = (resolve) => {
 export default new Router({
     routes: [{
             path: '/',
-            redirect: '/recommend'
+            redirect: '/recommend',
+            meta: {
+                title: '推荐'
+            }
         },
         {
             path: '/recommend',
@@ -65,7 +68,10 @@ export default new Router({
             children: [{
                 path: ':id',
                 component: Disc
-            }]
+            }],
+            meta: {
+                title: '推荐'
+            }
         },
         {
             path: '/singer',
@@ -73,7 +79,10 @@ export default new Router({
             children: [{
                 path: ':id',
                 component: SingerDetail
-            }]
+            }],
+            meta: {
+                title: '歌手'
+            }
         },
         {
             path: '/rank',
@@ -81,7 +90,10 @@ export default new Router({
             children: [{
                 path: ':id',
                 component: TopList
-            }]
+            }],
+            meta: {
+                title: '排行榜'
+            }
         },
         {
             path: '/search',
@@ -89,11 +101,18 @@ export default new Router({
             children: [{
                 path: ':id',
                 component: SingerDetail
-            }]
+            }],
+            meta: {
+                title: '搜索'
+            }
         },
         {
             path: '/user',
-            component: UserCenter
+            component: UserCenter,
+            meta: {
+                title: '个人中心'
+            }
         }
+        
     ]
 })

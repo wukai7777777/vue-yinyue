@@ -7,11 +7,11 @@ import VueLazyload from 'vue-lazyload'
 import store from './store'
 import MetaInfo from 'vue-meta-info'
 
-
+import VueWechatTitle from 'vue-wechat-title';  
 import 'common/stylus/index.styl'
 
 /* eslint-disable no-unused-vars */
-import vConsole from 'vconsole'
+// import vConsole from 'vconsole'
 
 fastclick.attach(document.body) // 解决click 在移动端延迟问题
 
@@ -19,6 +19,7 @@ fastclick.attach(document.body) // 解决click 在移动端延迟问题
     //   loading: require('common/image/default.png')
     // })
     
+Vue.use(VueWechatTitle)
 Vue.use(MetaInfo)
 // or with options 图片懒加载
 Vue.use(VueLazyload, {

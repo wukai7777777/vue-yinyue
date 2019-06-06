@@ -3,7 +3,7 @@
       <m-header></m-header>
       <tab></tab>
       <keep-alive>
-        <router-view></router-view>
+        <router-view v-wechat-title="$route.meta.title"></router-view>
       </keep-alive>
       <player></player>
   </div>

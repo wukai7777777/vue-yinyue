@@ -11,7 +11,6 @@ var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const PrerenderSpaPlugin = require('prerender-spa-plugin')
 
 
-console.loog( PrerenderSPAPlugin,'-=-=--=================')
 var env = config.build.env
 
 var webpackConfig = merge(baseWebpackConfig, {
@@ -94,11 +93,14 @@ var webpackConfig = merge(baseWebpackConfig, {
         ignore: ['.*']
       }
     ]),
-    new PrerenderSPAPlugin({
+    new PrerenderSpaPlugin({
       staticDir: path.join(__dirname, '../dist'),
       routes: ['/', '/recommend', '/singer', '/rank', '/search', '/user'],
-      renderer: new PrerenderSPAPlugin.PuppeteerRenderer({//这样写renderAfterTime生效了
-        renderAfterTime: 5000
+      renderer: new PrerenderSpaPlugin.PuppeteerRenderer({//这样写renderAfterTime生效了
+        timeout: 0,
+        maxConcurrentRoutes: 1,
+        renderAfterTime: 5000,
+        headless: false
       })
     })
   ]

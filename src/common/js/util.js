@@ -15,7 +15,6 @@ export function shuffle(arr) {
 
 export function debounce(func, delay) {
     let timer
-    console.log(timer)
     return function (...args) {
         if(timer) {
             clearTimeout(timer)
@@ -25,3 +24,18 @@ export function debounce(func, delay) {
         }, delay)
     }
 }
+
+export function throttle(fn, delay) {
+    let flag = false
+    return (...arg) => {
+      if(flag) {
+        return false;
+      }
+      fn.apply(this, arg)
+      flag = true
+
+      setTimeout(() => {
+        flag = false
+      }, delay)
+    }
+  }
