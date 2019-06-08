@@ -27,7 +27,7 @@ export function debounce(func, delay) {
 
 export function throttle(fn, delay) {
     let flag = false
-    return (...arg) => {
+    return function (...arg) { //* 注意不能使用箭头函数 箭头函数 的this 是固定的 即在申明的时候确定而不是在调用时确定
       if(flag) {
         return false;
       }
